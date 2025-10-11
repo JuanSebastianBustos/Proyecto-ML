@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Error {{ error_code }} - ML Supervisado{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center min-vh-75 align-items-center">
+        <div class="col-lg-6 text-center">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body py-5">
+                    <!-- Error Icon -->
+                    <div class="mb-4">
+                        {% if error_code == 404 %}
+                            <i class="fas fa-search fa-5x text-warning"></i>
+                        {% elif error_code == 500 %}
+                            <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
+                        {% elif error_code == 413 %}
+                            <i class="fas fa-file-upload fa-5x text-info"></i>
+                        {% else %}
+                            <i class="fas fa-bug fa-5x text-secondary"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Error Code -->
+                    <h1 class="display-1 fw-bold text-muted mb-3">{{ error_code }}</h1>
+                    
+                    <!-- Error Title -->
+                    <h2 class="h4 fw-bold mb-3">{{ error_title }}</h2>
+                    
+                    <!-- Error Message -->
+                    <p class="text-muted mb-4">{{ error_message }}</p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-home me-2"></i>Volver al Inicio
+                        </a>
+                        <button onclick="history.back()" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Página Anterior
+                        </button>
+                    </div>
+                    
+                    <!-- Additional Help -->
+                    <hr class="my-4">
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-3">¿Necesitas ayuda?</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-project-diagram text-primary me-2"></i>
+                                <a href="{{ url_for('caso1') }}" class="text-decoration-none">Explorar casos de uso</a>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-chart-line text-info me-2"></i>
+                                <a href="{{ url_for('rl_conceptos') }}" class="text-decoration-none">Conceptos de regresión lineal</a>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-chart-bar text-success me-2"></i>
+                                <a href="{{ url_for('logistica_conceptos') }}" class="text-decoration-none">Conceptos de regresión logística</a>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-sitemap text-warning me-2"></i>
+                                <a href="{{ url_for('dt_conceptos') }}" class="text-decoration-none">Conceptos de árboles de decisión</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

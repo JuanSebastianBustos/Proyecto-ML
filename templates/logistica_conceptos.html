@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Conceptos de Regresión Logística{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h1 class="display-4">Regresión Logística</h1>
+        <p class="lead text-white-50">Conceptos fundamentales de uno de los algoritmos de clasificación más importantes.</p>
+    </div>
+
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-8">
+            <div class="card bg-dark border-secondary shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="card-title h4 border-bottom border-secondary pb-2 mb-3">¿Qué es?</h2>
+                    <p class="card-text text-white-50">
+                        La regresión logística es un algoritmo de clasificación supervisada diseñado específicamente para modelar la probabilidad de una <strong>variable objetivo binaria</strong>. Es decir, predice resultados que pertenecen a una de dos categorías (e.g., Sí/No, 1/0, Verdadero/Falso).
+                    </p>
+                    <p class="card-text text-white-50 mt-3">
+                        Aunque su nombre incluye "regresión", su propósito fundamental es la <strong>clasificación</strong>. Lo hace estimando la probabilidad de que una observación pertenezca a la clase "positiva" (generalmente denotada como 1).
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <blockquote class="blockquote bg-black bg-opacity-25 border-start border-primary border-4 ps-3 py-2">
+                <p class="mb-1 fst-italic">"El objetivo es transformar una combinación lineal de variables en una probabilidad (un valor entre 0 y 1)."</p>
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="card bg-dark border-secondary shadow-sm mb-5">
+        <div class="card-header">
+            <h2 class="h5 mb-0">De la Linealidad a la Probabilidad</h2>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-6 border-end-md border-secondary">
+                    <h3 class="h5">Paso 1: La Función Sigmoide (Probabilidad)</h3>
+                    <p class="small text-white-50">El modelo primero calcula una puntuación lineal $$ z $$. Luego, la <strong>función sigmoide</strong> transforma esta puntuación en una probabilidad $$ \sigma(z) $$.</p>
+                    <div class="bg-black bg-opacity-25 border border-secondary rounded p-3 text-center my-3 text-white font-monospace">
+                        $$ \sigma(z) = \frac{1}{1 + e^{-z}} $$
+                    </div>
+                                        <p class="small text-white-50">Esta función garantiza que la salida siempre esté entre 0 y 1.</p>
+                </div>
+                <div class="col-md-6 mt-4 mt-md-0 ps-md-4">
+                    <h3 class="h5">Paso 2: La Función Logit (Log-Odds)</h3>
+                    <p class="small text-white-50">El modelo es lineal no en la probabilidad directamente, sino en el <strong>logit</strong> de la probabilidad (logaritmo de las odds o momios).</p>
+                    <div class="bg-black bg-opacity-25 border border-secondary rounded p-3 text-center my-3 text-white font-monospace">
+                        $$ \text{logit}(p) = \ln\left(\frac{p}{1-p}\right) = z $$
+                    </div>
+                    <p class="small text-white-50">Aquí, $$ z $$ es la combinación lineal de las variables: $$ z = \beta_0 + \beta_1X_1 + \dots $$ Esta es la conexión clave entre la regresión lineal y la logística.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="accordion" id="conceptosAdicionales">
+        <div class="accordion-item bg-dark border-secondary">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <strong>Tipos de Regresión Logística</strong>
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#conceptosAdicionales">
+                <div class="accordion-body text-white-50">
+                    <ul class="list-unstyled">
+                        <li><strong>Binaria:</strong> El caso estándar. La variable objetivo tiene dos resultados. <em>(Ej: ¿El cliente comprará o no?)</em></li>
+                        <li><strong>Multinomial:</strong> La variable objetivo tiene tres o más categorías sin un orden natural. <em>(Ej: ¿El animal es un perro, un gato o un pájaro?)</em></li>
+                        <li><strong>Ordinal:</strong> La variable objetivo tiene tres o más categorías con un orden intrínseco. <em>(Ej: Calificación de un servicio: Malo, Regular, Bueno)</em></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item bg-dark border-secondary">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <strong>Supuestos Clave del Modelo</strong>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#conceptosAdicionales">
+                <div class="accordion-body text-white-50">
+                    Para un rendimiento óptimo, el modelo asume:
+                    <ul>
+                        <li><strong>Independencia de las observaciones:</strong> Cada fila de datos es independiente.</li>
+                        <li><strong>Ausencia de multicolinealidad:</strong> Las variables predictoras no están altamente correlacionadas entre sí.</li>
+                        <li><strong>Relación lineal entre las variables y el logit:</strong> La linealidad se espera en la escala del logit, no en la de probabilidad.</li>
+                        <li><strong>Tamaño de muestra adecuado:</strong> Generalmente requiere más datos que la regresión lineal para obtener estimaciones estables.</li>
+                    </ul>
+                </div> 
+            </div>
+        </div>  
+        <div class="accordion-item bg-dark border-secondary">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed bg-dark text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <strong>Conclusiones</strong>
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#conceptosAdicionales">
+                <div class="accordion-body text-white-50">
+                    <ul>
+                        <li>La regresión logística es fundamental para problemas donde la variable objetivo es categórica y binaria, permitiendo modelar probabilidades de ocurrencia.</li>
+                        <li>Su principal fortaleza está en el uso de la función sigmoide, que limita los valores a un rango probabilístico interpretable.</li>
+                        <li>Es una herramienta ampliamente aplicada en ciencias sociales, medicina, economía e ingeniería debido a su capacidad para clasificar y predecir.</li>
+                        <li>Aunque es más simple que otros modelos de machine learning, sigue siendo una base sólida y necesaria para entender algoritmos más avanzados de clasificación.</li>
+                    </ul>
+                </div> 
+            </div>
+        </div>
+    </div>
+   
+    <div class="card shadow-sm bg-dark border-secondary mt-5">
+        <div class="card-header">
+            <h2 class="h5 mb-0">Referencias</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item small bg-dark text-white-50">
+                Universidad Nacional Autónoma de México. (2020).<em> Regresión Logística: conceptos básicos y aplicaciones. UNAM. Recuperado de:</em>. https://www.scielo.org.mx/pdf/cya/v65n1/0186-1042-cya-65-01-75.pdf
+                
+            </li>
+            <li class="list-group-item small bg-dark text-white-50">
+                Sánchez, J. (2018).<em> Apuntes de regresión logística. Universidad de Granada. Recuperado de:</em>. https://digibug.ugr.es/bitstream/handle/10481/50031/ApuntesRegresionLogistica.pdf
+                
+            </li>
+             <li class="list-group-item small bg-dark text-white-50">
+                 Khan Academy. (s.f.). <em>Regresión logística. Recuperado de: </em>https://es.khanacademy.org/math/statistics-probability/advanced-regression-inference/logistic-regression/a/logistic-regression-review
+            </li>
+            <li class="list-group-item small bg-dark text-white-50">
+                 StatSoft Latinoamérica. (s.f.).<em> Regresión Logística. Recuperado de:</em> https://www.statsoft.com/Textbook/Logistic-Regression
+            </li>
+            
+        </ul>
+    </div>
+
+    <div class="d-flex justify-content-between my-4">
+        <a href="{{ url_for('logistica_practico') }}" class="btn btn-primary d-flex align-items-center">
+            Caso practico
+            <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

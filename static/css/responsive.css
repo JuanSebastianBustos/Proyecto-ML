@@ -1,0 +1,120 @@
+/* Estilos responsivos */
+@media (max-width: 992px) {
+    .hero .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .hero-content {
+        padding-right: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-image {
+        font-size: 8rem;
+    }
+    
+    .intro-content {
+        flex-direction: column;
+    }
+    
+    .intro-text {
+        padding-right: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .intro-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+    }
+    
+    .stat {
+        margin: 0 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: var(--primary-color);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        padding: 1rem 0;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .nav-item {
+        margin: 1.5rem 0;
+    }
+    
+    .hamburger {
+        display: block;
+        cursor: pointer;
+    }
+    
+    .intro-stats {
+        flex-direction: column;
+    }
+    
+    .stat {
+        margin: 0.5rem 0;
+        width: 100%;
+    }
+    
+    .case-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .industry-tag {
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-image {
+        font-size: 6rem;
+    }
+    
+    .case-header h2 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .case-header h1 {
+        font-size: 2rem;
+    }
+    
+    .case-info h2, .case-references h2 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-next {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .case-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .case-info p, .case-references p {
+        font-size: 1rem;
+    }
+}

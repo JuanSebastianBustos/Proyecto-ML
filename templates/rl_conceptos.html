@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Conceptos Básicos - Regresión Lineal{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    
+    <header class="text-center mb-5">
+        <h1 class="display-4">Conceptos Básicos de Regresión Lineal</h1>
+        <p class="lead text-muted">Una introducción a uno de los métodos estadísticos más fundamentales.</p>
+    </header>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white">
+            <h2 class="h4 mb-0">Definición</h2>
+        </div>
+        <div class="card-body">
+            <p>La regresión lineal es uno de los métodos estadísticos más utilizados en ciencias sociales, economía, ingeniería y ciencias naturales para analizar la relación entre una <strong>variable dependiente</strong> (también llamada variable de respuesta o explicada) y una o varias <strong>variables independientes</strong> (también denominadas predictoras o regresoras).</p>
+            <p>Su propósito principal es explicar y predecir el comportamiento de la variable dependiente a partir de las independientes. Este análisis permite identificar tendencias, estimar parámetros desconocidos y evaluar la influencia de diferentes factores sobre una variable de interés.</p>
+            
+            <hr class="my-4">
+
+            <h3 class="h5">Regresión Lineal Simple</h3>
+            <p>En su forma más simple, la regresión lineal simple modela la relación entre dos variables mediante una línea recta, con la ecuación:</p>
+            <div class="bg-dark text-light p-3 rounded text-center my-3">
+                <p class="lead font-monospace">$$ Y = \beta_0 + \beta_1X + \epsilon $$</p>
+            </div>
+            
+            <p>Donde:</p>
+            <ul class="list-unstyled">
+                <li><strong>Y:</strong> es la variable dependiente.</li>
+                <li><strong>X:</strong> es la variable independiente.</li>
+                <li><strong>$ \beta_0 $:</strong> es el intercepto (el valor de Y cuando X es 0).</li>
+                <li><strong>$ \beta_1 $:</strong> es la pendiente (el cambio en Y por cada unidad de cambio en X).</li>
+                <li><strong>$ \epsilon $:</strong> es el término de error, que representa la variabilidad no explicada por el modelo.</li>
+            </ul>
+
+            <h3 class="h5 mt-4">Regresión Lineal Múltiple</h3>
+            <p>En contextos más complejos se utiliza la regresión lineal múltiple, donde se incluyen varias variables independientes:</p>
+            <div class="bg-dark text-light p-3 rounded text-center my-3">
+                <p class="lead font-monospace">$$ Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ... + \beta_nX_n + \epsilon $$</p>
+            </div>
+            <p>Esto permite estudiar simultáneamente el efecto de múltiples factores sobre la variable dependiente.</p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-success text-white">
+            <h2 class="h4 mb-0">Supuestos Fundamentales del Modelo</h2>
+        </div>
+        <div class="card-body">
+            <p>Para que la regresión lineal sea estadísticamente válida y produzca estimaciones confiables, es necesario que se cumplan ciertos supuestos teóricos. Estos supuestos son la base del método de <strong>Mínimos Cuadrados Ordinarios (MCO)</strong>, que se emplea para estimar los coeficientes $ \beta $.</p>
+            
+            <ul class="list-group list-group-flush mt-4">
+                <li class="list-group-item">
+                    <h5>1. Linealidad</h5>
+                    <p>El modelo asume que la relación entre la variable dependiente y cada una de las independientes es lineal. Una violación de este supuesto puede llevar a predicciones sesgadas. Se verifica con gráficos de dispersión y de residuos.</p>
+                </li>
+                <li class="list-group-item">
+                    <h5>2. Independencia de los Errores</h5>
+                    <p>Los errores ($ \epsilon $) deben ser independientes entre sí, lo que significa que el error de una observación no debe influir en el de otra. La violación común es la <strong>autocorrelación</strong> en series temporales y se puede evaluar con la prueba de <strong>Durbin-Watson</strong>.</p>
+                </li>
+                <li class="list-group-item">
+                    <h5>3. Homocedasticidad (Varianza Constante)</h5>
+                    <p>Se espera que los errores tengan una varianza constante a lo largo de todos los niveles de las variables independientes. Cuando la varianza cambia, se presenta <strong>heterocedasticidad</strong>, invalidando las pruebas de hipótesis. Se detecta con gráficos de residuos y pruebas como <strong>Breusch-Pagan</strong>.</p>
+                </li>
+                <li class="list-group-item">
+                    <h5>4. Normalidad de los Errores</h5>
+                    <p>Se asume que los errores siguen una distribución normal con media cero. Este supuesto es clave para la inferencia estadística (intervalos de confianza y pruebas de hipótesis). Se puede verificar con gráficos Q-Q y pruebas como <strong>Shapiro-Wilk</strong>.</p>
+                </li>
+                <li class="list-group-item">
+                    <h5>5. No Multicolinealidad</h5>
+                    <p>En regresión múltiple, las variables independientes no deben estar altamente correlacionadas entre sí. La multicolinealidad infla la varianza de los coeficientes, haciendo las estimaciones inestables. Se detecta con una matriz de correlación o el <strong>Factor de Inflación de la Varianza (VIF)</strong>.</p>
+                    <p><strong>Soluciones comunes:</strong> Eliminar una de las variables correlacionadas, combinarlas en un índice o usar técnicas de regularización (Ridge, Lasso).</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-info text-white">
+            <h2 class="h4 mb-0">Conclusiones</h2>
+        </div>
+        <div class="card-body">
+            <p>La regresión lineal es una herramienta <strong>potente y versátil</strong> para modelar relaciones entre variables. Su simplicidad la convierte en un punto de partida fundamental en el análisis de datos y el aprendizaje automático.</p>
+            <p>Sin embargo, la validez de sus resultados depende críticamente del cumplimiento de sus supuestos. Ignorar la <strong>linealidad, independencia, homocedasticidad, normalidad de los errores y la no multicolinealidad</strong> puede llevar a interpretaciones erróneas.</p>
+            <p class="fw-bold">En resumen, cuando se aplica correctamente, la regresión lineal ofrece una visión clara y cuantificable de las relaciones en los datos, sentando las bases para modelos predictivos más complejos y decisiones informadas.</p>
+        </div>
+    </div>
+
+    <div class="accordion" id="accordionReferences">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              <strong>Referencias Bibliográficas</strong>
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionReferences">
+            <div class="accordion-body">
+                <p><small>Gujarati, D. N., & Porter, D. C. (2009). <i>Basic econometrics</i>. McGraw-Hill.</small></p>
+                <p><small>Hair, J. F., Black, W. C., Babin, B. J., & Anderson, R. E. (2019). <i>Multivariate data analysis</i> (8th ed.). Cengage Learning.</small></p>
+                <p><small>Hastie, T., Tibshirani, R., & Friedman, J. (2009). <i>The elements of statistical learning: Data mining, inference, and prediction</i>. Springer.</small></p>
+                <p><small>James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). <i>An introduction to statistical learning: With applications in R</i>. Springer.</small></p>
+                <p><small>Kutner, M. H., Nachtsheim, C. J., Neter, J., & Li, W. (2005). <i>Applied linear statistical models</i>. McGraw-Hill Irwin.</small></p>
+                <p><small>Montgomery, D. C., Peck, E. A., & Vining, G. G. (2021). <i>Introduction to linear regression analysis</i> (6th ed.). Wiley.</small></p>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between my-4">
+        <a href="{{ url_for('rl_practico') }}" class="btn btn-primary d-flex align-items-center">
+            Caso practico
+            <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
