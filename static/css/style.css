@@ -1,88 +1,9 @@
-/*Custom CSS (mínimo para branding)*/
-
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-}
-
-.card-hover {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-.btn-custom-primary {
-    background: linear-gradient(135deg, var(--primary-custom), var(--secondary-custom));
-    border: none;
-    font-weight: 500;
-}
-
-.btn-custom-primary:hover {
-    background: linear-gradient(135deg, #1d4ed8, var(--primary-custom));
-    transform: translateY(-1px);
-}
-
-.hero-section {
-    background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
-}
-
-.footer {
-    background: linear-gradient(135deg, #1f2937, #111827);
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: var(--primary-custom);
-    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
-}
-
-.text-primary-custom {
-    color: var(--primary-custom) !important;
-}
-
-.bg-primary-custom {
-    background-color: var(--primary-custom) !important;
-}
-
-/* Loading spinner personalizado */
-.spinner-custom {
-    color: var(--primary-custom);
-}
-
-/* Alert mejorados */
-.alert-custom {
-    border-left: 4px solid;
-    border-radius: 0.5rem;
-}
-
-.alert-custom.alert-success {
-    border-left-color: var(--success-custom);
-    background-color: rgba(16, 185, 129, 0.1);
-}
-
-.alert-custom.alert-danger {
-    border-left-color: var(--danger-custom);
-    background-color: rgba(239, 68, 68, 0.1);
-}
-
-.alert-custom.alert-warning {
-    border-left-color: var(--warning-custom);
-    background-color: rgba(245, 158, 11, 0.1);
-}
-
-.definition-text p {
-  color: #212529 !important; /* Un gris muy oscuro #212529 */
-}
-
-/* 
- * CSS Personalizado Mínimo para ML Supervisado
- * Complementa Bootstrap 5 sin duplicar funcionalidades
- */
+/* ====================================
+   VARIABLES Y CONFIGURACIÓN GLOBAL
+   ==================================== */
 
 :root {
-    /* Variables personalizadas para branding */
+    /* Colores principales */
     --brand-primary: #2563eb;
     --brand-secondary: #3b82f6;
     --brand-success: #10b981;
@@ -90,137 +11,37 @@
     --brand-danger: #ef4444;
     --brand-info: #06b6d4;
     
-    /* Transiciones y animaciones */
+    /* Transiciones */
     --transition-fast: 0.15s ease-in-out;
     --transition-normal: 0.25s ease-in-out;
     --transition-slow: 0.35s ease-in-out;
     
-    /* Sombras personalizadas */
+    /* Sombras */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* ===========================================
-   COMPONENTES PERSONALIZADOS
-   =========================================== */
-
-/* Hover effects para cards */
-.card-hover {
-    transition: var(--transition-normal);
-    cursor: pointer;
+/* Tema oscuro personalizado */
+[data-bs-theme="dark"] {
+    --bs-body-bg: #0d1117;
+    --bs-body-color: #f0f6fc;
 }
 
-.card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-xl);
+[data-bs-theme="dark"] .card {
+    --bs-card-bg: #161b22;
+    border-color: #21262d;
 }
 
-/* Botones personalizados con gradientes */
-.btn-gradient-primary {
-    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-    border: none;
-    color: white;
-    font-weight: 500;
-    transition: var(--transition-normal);
+html {
+    scroll-behavior: smooth;
 }
 
-.btn-gradient-primary:hover {
-    background: linear-gradient(135deg, #1d4ed8, var(--brand-primary));
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    color: white;
-}
+/* ====================================
+   NAVBAR
+   ==================================== */
 
-/* Badges con animación pulse */
-.badge-pulse {
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* ===========================================
-   MEJORAS DE FORMULARIOS
-   =========================================== */
-
-/* Estilos mejorados para inputs con focus */
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--brand-primary);
-    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
-}
-
-/* Labels con iconos */
-.form-label-icon {
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-}
-
-.form-label-icon i {
-    margin-right: 0.5rem;
-    font-size: 0.9em;
-}
-
-/* Input groups mejorados */
-.input-group-text {
-    background-color: var(--bs-light);
-    border-color: var(--bs-border-color);
-}
-
-/* Radio buttons estilizados */
-.btn-check:checked + .btn-outline-success {
-    background-color: var(--brand-success);
-    border-color: var(--brand-success);
-}
-
-.btn-check:checked + .btn-outline-danger {
-    background-color: var(--brand-danger);
-    border-color: var(--brand-danger);
-}
-
-/* ===========================================
-   ALERTAS MEJORADAS
-   =========================================== */
-
-.alert-custom {
-    border-left: 4px solid;
-    border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-}
-
-.alert-custom.alert-success {
-    border-left-color: var(--brand-success);
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-}
-
-.alert-custom.alert-danger {
-    border-left-color: var(--brand-danger);
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
-}
-
-.alert-custom.alert-warning {
-    border-left-color: var(--brand-warning);
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
-}
-
-.alert-custom.alert-info {
-    border-left-color: var(--brand-info);
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.05));
-}
-
-/* ===========================================
-   NAVEGACIÓN MEJORADA
-   =========================================== */
-
-/* Navbar brand con hover effect */
 .navbar-brand {
     font-weight: 700;
     font-size: 1.5rem;
@@ -231,7 +52,404 @@
     transform: scale(1.02);
 }
 
-/* Dropdown mejorados */
+.nav-link {
+    font-weight: 500;
+    transition: var(--transition-fast);
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--brand-primary);
+    transition: var(--transition-normal);
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 80%;
+}
+
+/* ====================================
+   HERO SECTION
+   ==================================== */
+
+.hero-section {
+    background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,128C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom center no-repeat;
+    background-size: cover;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-illustration {
+    position: relative;
+    z-index: 2;
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+/* ====================================
+   BOTONES
+   ==================================== */
+
+.btn-gradient-primary {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    border: none;
+    color: white;
+    font-weight: 500;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-gradient-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, var(--brand-primary));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: white;
+}
+
+/* ====================================
+   CARDS
+   ==================================== */
+
+.card-hover {
+    transition: var(--transition-normal);
+    cursor: pointer;
+}
+
+.card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl) !important;
+}
+
+.card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+/* ====================================
+   STATS SECTION
+   ==================================== */
+
+.stat-card {
+    padding: 1.5rem;
+    transition: var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: scale(1.05);
+}
+
+.stat-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* ====================================
+   OBJETIVOS
+   ==================================== */
+
+.objetivo-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(59, 130, 246, 0.1));
+}
+
+/* ====================================
+   UNIVERSIDADES
+   ==================================== */
+
+.universidad-badge {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    border-radius: 12px;
+    color: white;
+}
+
+.universidad-info .info-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.universidad-info .info-item:last-child {
+    border-bottom: none;
+}
+
+/* ====================================
+   EQUIPO
+   ==================================== */
+
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-lg);
+}
+
+/* ====================================
+   EFECTOS ESPECIALES
+   ==================================== */
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* ====================================
+   FOOTER
+   ==================================== */
+
+.footer {
+    background: linear-gradient(135deg, #1f2937, #111827);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ====================================
+   UTILIDADES
+   ==================================== */
+
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ====================================
+   RESPONSIVE
+   ==================================== */
+
+@media (max-width: 992px) {
+    .hero-section {
+        min-height: auto;
+        padding: 4rem 0;
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-4px);
+    }
+    
+    .stat-card:hover {
+        transform: scale(1.02);
+    }
+}
+
+@media (max-width: 768px) {
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-illustration {
+        margin-top: 2rem;
+    }
+    
+    .btn-gradient-primary:hover {
+        transform: none;
+    }
+    
+    .nav-link::after {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-3 {
+        font-size: 2rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* ====================================
+   ANIMACIONES DE ENTRADA
+   ==================================== */
+
+[data-aos] {
+    opacity: 0;
+    transition-property: transform, opacity;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+}
+
+[data-aos="fade-up"] {
+    transform: translateY(30px);
+}
+
+[data-aos="fade-up"].aos-animate {
+    transform: translateY(0);
+}
+
+[data-aos="fade-right"] {
+    transform: translateX(-30px);
+}
+
+[data-aos="fade-right"].aos-animate {
+    transform: translateX(0);
+}
+
+[data-aos="fade-left"] {
+    transform: translateX(30px);
+}
+
+[data-aos="fade-left"].aos-animate {
+    transform: translateX(0);
+}
+
+[data-aos="zoom-in"] {
+    transform: scale(0.9);
+}
+
+[data-aos="zoom-in"].aos-animate {
+    transform: scale(1);
+}
+
+[data-aos="flip-left"] {
+    transform: perspective(1000px) rotateY(-15deg);
+}
+
+[data-aos="flip-left"].aos-animate {
+    transform: perspective(1000px) rotateY(0);
+}
+
+/* ====================================
+   SCROLL INDICATOR
+   ==================================== */
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+/* ====================================
+   LOADING STATES
+   ==================================== */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-normal);
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ====================================
+   TOAST NOTIFICATIONS
+   ==================================== */
+
+.toast-container {
+    z-index: 1100;
+}
+
+/* ====================================
+   FORM STYLES
+   ==================================== */
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* ====================================
+   DROPDOWN MENUS
+   ==================================== */
+
 .dropdown-menu {
     border: none;
     box-shadow: var(--shadow-lg);
@@ -251,182 +469,147 @@
     transform: translateX(4px);
 }
 
-/* ===========================================
-   COMPONENTES ESPECIALIZADOS ML
-   =========================================== */
+/* ====================================
+   BADGES
+   ==================================== */
 
-/* Métricas cards */
-.metric-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: var(--transition-normal);
+.badge {
+    padding: 0.5em 1em;
+    font-weight: 600;
 }
 
-.metric-card:hover {
-    transform: scale(1.02);
-    box-shadow: var(--shadow-lg);
+/* ====================================
+   ALERTS
+   ==================================== */
+
+.alert {
+    border-radius: 0.75rem;
+    border: none;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Iconos circulares para métricas */
-.metric-icon {
-    width: 60px;
-    height: 60px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-}
+/* ====================================
+   PROGRESS BARS
+   ==================================== */
 
-/* Progress bars personalizados */
-.progress-custom {
+.progress {
     height: 8px;
     border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.1);
 }
 
-.progress-custom .progress-bar {
+.progress-bar {
     border-radius: 10px;
     background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
 }
 
-/* ===========================================
-   LOADING STATES
-   =========================================== */
+/* ====================================
+   TABLES
+   ==================================== */
 
-/* Loading overlay */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition-normal);
+.table {
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 
-.loading-overlay.show {
-    opacity: 1;
-    visibility: visible;
+.table thead {
+    background: var(--brand-primary);
+    color: white;
 }
 
-/* Spinner personalizado */
-.spinner-custom {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(37, 99, 235, 0.3);
-    border-top: 4px solid var(--brand-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+/* ====================================
+   PAGINATION
+   ==================================== */
+
+.pagination .page-link {
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+    border: none;
+    transition: var(--transition-fast);
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.pagination .page-link:hover {
+    background: var(--brand-primary);
+    color: white;
+    transform: translateY(-2px);
 }
 
-/* ===========================================
-   UTILIDADES ADICIONALES
-   =========================================== */
-
-/* Texto con gradiente */
-.text-gradient {
-    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 700;
+.pagination .page-item.active .page-link {
+    background: var(--brand-primary);
+    border: none;
 }
 
-/* Scroll suave */
-html {
-    scroll-behavior: smooth;
-}
+/* ====================================
+   MODALS
+   ==================================== */
 
-/* Sombra de texto para mejorar legibilidad */
-.text-shadow {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Glassmorphism effect */
-.glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.modal-content {
+    border: none;
     border-radius: 1rem;
+    box-shadow: var(--shadow-xl);
 }
 
-/* ===========================================
-   RESPONSIVIDAD ADICIONAL
-   =========================================== */
-
-/* Mejoras para tablets */
-@media (max-width: 992px) {
-    .card-hover:hover {
-        transform: none;
-    }
-    
-    .metric-card:hover {
-        transform: none;
-    }
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Mejoras para móviles */
-@media (max-width: 768px) {
-    .btn-gradient-primary:hover {
-        transform: none;
-    }
-    
-    .navbar-brand:hover {
-        transform: none;
-    }
-    
-    .dropdown-item:hover {
-        transform: none;
-    }
+.modal-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ===========================================
-   MODO OSCURO ESPECÍFICO
-   =========================================== */
+/* ====================================
+   TOOLTIPS
+   ==================================== */
 
-[data-bs-theme="dark"] {
-    --bs-body-bg: #0d1117;
-    --bs-body-color: #f0f6fc;
+.tooltip-inner {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
 }
 
-[data-bs-theme="dark"] .card {
-    --bs-card-bg: #161b22;
-    border-color: #21262d;
+/* ====================================
+   CUSTOM SCROLLBAR
+   ==================================== */
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
 }
 
-[data-bs-theme="dark"] .navbar-dark {
-    --bs-navbar-brand-color: #f0f6fc;
+::-webkit-scrollbar-track {
+    background: #1f2937;
 }
 
-[data-bs-theme="dark"] .alert-custom {
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    color: var(--bs-body-color);
+::-webkit-scrollbar-thumb {
+    background: var(--brand-primary);
+    border-radius: 5px;
 }
 
-/* ===========================================
+::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-secondary);
+}
+
+/* ====================================
+   SELECTION
+   ==================================== */
+
+::selection {
+    background: var(--brand-primary);
+    color: white;
+}
+
+::-moz-selection {
+    background: var(--brand-primary);
+    color: white;
+}
+
+/* ====================================
    PRINT STYLES
-   =========================================== */
+   ==================================== */
 
 @media print {
     .navbar,
     .footer,
     .btn,
-    .card-hover {
+    .hero-section::before {
         display: none !important;
     }
     
@@ -438,10 +621,12 @@ html {
     body {
         font-size: 12pt;
         line-height: 1.4;
+        color: black;
+        background: white;
+    }
+    
+    [data-bs-theme="dark"] {
+        --bs-body-bg: white;
+        --bs-body-color: black;
     }
 }
-
-.min-vh-75 {
-    min-height: 75vh;
-}
-

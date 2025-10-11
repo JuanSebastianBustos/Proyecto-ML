@@ -1,71 +1,147 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error {{ error_code }} - {{ error_title }}</title>
 
-{% block title %}Error {{ error_code }} - ML Supervisado{% endblock %}
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
 
-{% block content %}
-<div class="container">
-    <div class="row justify-content-center min-vh-75 align-items-center">
-        <div class="col-lg-6 text-center">
-            <div class="card border-0 shadow-lg">
-                <div class="card-body py-5">
-                    <!-- Error Icon -->
-                    <div class="mb-4">
-                        {% if error_code == 404 %}
-                            <i class="fas fa-search fa-5x text-warning"></i>
-                        {% elif error_code == 500 %}
-                            <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
-                        {% elif error_code == 413 %}
-                            <i class="fas fa-file-upload fa-5x text-info"></i>
-                        {% else %}
-                            <i class="fas fa-bug fa-5x text-secondary"></i>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Error Code -->
-                    <h1 class="display-1 fw-bold text-muted mb-3">{{ error_code }}</h1>
-                    
-                    <!-- Error Title -->
-                    <h2 class="h4 fw-bold mb-3">{{ error_title }}</h2>
-                    
-                    <!-- Error Message -->
-                    <p class="text-muted mb-4">{{ error_message }}</p>
-                    
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="{{ url_for('index') }}" class="btn btn-primary">
-                            <i class="fas fa-home me-2"></i>Volver al Inicio
-                        </a>
-                        <button onclick="history.back()" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>Página Anterior
-                        </button>
-                    </div>
-                    
-                    <!-- Additional Help -->
-                    <hr class="my-4">
-                    <div class="text-start">
-                        <h6 class="fw-bold mb-3">¿Necesitas ayuda?</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <i class="fas fa-project-diagram text-primary me-2"></i>
-                                <a href="{{ url_for('caso1') }}" class="text-decoration-none">Explorar casos de uso</a>
-                            </li>
-                            <li class="mb-2">
-                                <i class="fas fa-chart-line text-info me-2"></i>
-                                <a href="{{ url_for('rl_conceptos') }}" class="text-decoration-none">Conceptos de regresión lineal</a>
-                            </li>
-                            <li class="mb-2">
-                                <i class="fas fa-chart-bar text-success me-2"></i>
-                                <a href="{{ url_for('logistica_conceptos') }}" class="text-decoration-none">Conceptos de regresión logística</a>
-                            </li>
-                            <li class="mb-2">
-                                <i class="fas fa-sitemap text-warning me-2"></i>
-                                <a href="{{ url_for('dt_conceptos') }}" class="text-decoration-none">Conceptos de árboles de decisión</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,128C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom center no-repeat;
+            background-size: cover;
+        }
+
+        .error-content {
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .error-message {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            color: #f59e0b;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+            
+            .error-title {
+                font-size: 1.5rem;
+            }
+            
+            .error-content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-content">
+            <div class="error-icon">
+                {% if error_code == 404 %}
+                <i class="fas fa-search"></i>
+                {% elif error_code == 500 %}
+                <i class="fas fa-exclamation-triangle"></i>
+                {% elif error_code == 413 %}
+                <i class="fas fa-file-upload"></i>
+                {% else %}
+                <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
             </div>
+            <div class="error-code">{{ error_code }}</div>
+            <h1 class="error-title">{{ error_title }}</h1>
+            <p class="error-message">{{ error_message }}</p>
+            <a href="{{ url_for('index') }}" class="btn btn-gradient-primary btn-lg px-5">
+                <i class="fas fa-home me-2"></i>Volver al Inicio
+            </a>
         </div>
     </div>
-</div>
-{% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
