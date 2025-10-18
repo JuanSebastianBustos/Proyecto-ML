@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados - Beer Hazy Predictor{% endblock %}
+
+{% block extra_css %}
+<style>
+    .score-circle {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        font-weight: 900;
+        color: white;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        animation: scaleIn 0.5s ease-out;
+    }
+    
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    .stars {
+        color: #FFD700;
+        font-size: 2rem;
+    }
+    
+    .result-card {
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: var(--beer-amber);
+        position: absolute;
+        animation: confetti-fall 3s linear forwards;
+    }
+    
+    @keyframes confetti-fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-beer" style="min-height: 40vh;">
+    <div class="container">
+        <div class="hero-content text-center">
+            <h1 class="hero-title">Resultados</h1>
+            <p class="hero-subtitle">Predicción completada exitosamente</p>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="py-5">
+    <div class="container">
+        <!-- Score Display -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card-beer p-5 text-center">
+                    <h2 class="fw-bold mb-4" style="color: var(--beer-dark);">Puntuación Predicha</h2>
+                    
+                    <div class="d-flex justify-content-center mb-4">
+                        <div class="score-circle bg-{{ resultado.color }}">
+                            {{ resultado.puntuacion }}
+                        </div>
+                    </div>
+                    
+                    <div class="stars mb-3">
+                        {% for i in range(5) %}
+                            {% if i < resultado.puntuacion %}
+                                <i class="fas fa-star"></i>
+                            {% elif i < resultado.puntuacion + 0.5 %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <h3 class="fw-bold mb-3">
+                        <span class="badge px-4 py-2" style="background: var(--beer-amber); font-size: 1.3rem;">
+                            {{ resultado.categoria }}
+                        </span>
+                    </h3>
+                    
+                    <p class="lead text-muted mb-4">Tu cerveza Hazy ha obtenido una excelente calificación</p>
+                    
+                    <div class="d-flex justify-content-center align-items-center gap-3">
+                        <div class="text-center">
+                            <div class="fw-bold" style="font-size: 2rem; color: var(--beer-amber);">{{ resultado.confianza }}%</div>
+                            <small class="text-muted">Nivel de Confianza</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Características Ingresadas -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card-beer p-4">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">
+                        <i class="fas fa-list-check text-warning me-2"></i>
+                        Características Evaluadas
+                    </h4>
+                    <div class="row g-3">
+                        {% for key, value in resultado.caracteristicas.items() %}
+                        <div class="col-md-6 col-lg-3">
+                            <div class="p-3 rounded" style="background: var(--beer-cream);">
+                                <div class="text-muted small mb-1">{{ key }}</div>
+                                <div class="fw-bold" style="font-size: 1.3rem; color: var(--beer-amber);">{{ value }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Interpretación -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card-beer p-4">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        Interpretación del Resultado
+                    </h4>
+                    
+                    {% if resultado.puntuacion >= 4.5 %}
+                    <div class="alert alert-success mb-3">
+                        <i class="fas fa-trophy me-2"></i>
+                        <strong>¡Excepcional!</strong> Tu cerveza tiene características premium que probablemente generen una excelente aceptación en el mercado.
+                    </div>
+                    <p class="mb-3">Las características de tu Hazy IPA están en el rango óptimo. El balance entre amargor, aroma y turbidez es ideal para este estilo.</p>
+                    
+                    {% elif resultado.puntuacion >= 4.0 %}
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-star me-2"></i>
+                        <strong>Excelente</strong> Tu cerveza muestra un muy buen perfil que debería tener buena aceptación.
+                    </div>
+                    <p class="mb-3">Tu Hazy IPA presenta características sólidas. Podrías considerar ajustar levemente el amargor o el aroma para alcanzar la excelencia.</p>
+                    
+                    {% elif resultado.puntuacion >= 3.5 %}
+                    <div class="alert alert-primary mb-3">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Muy Buena</strong> Tu cerveza tiene un perfil sólido con potencial de mejora.
+                    </div>
+                    <p class="mb-3">Las características están bien balanceadas. Considera experimentar con mayor intensidad aromática o ajustar el nivel de turbidez.</p>
+                    
+                    {% elif resultado.puntuacion >= 3.0 %}
+                    <div class="alert alert-warning mb-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Buena</strong> Tu cerveza tiene una base decente pero con margen de mejora.
+                    </div>
+                    <p class="mb-3">Considera ajustar algunos parámetros. Para Hazy IPA, aumentar el aroma y la turbidez suele mejorar la aceptación.</p>
+                    
+                    {% else %}
+                    <div class="alert alert-danger mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Regular</strong> Hay oportunidades significativas de mejora.
+                    </div>
+                    <p class="mb-3">Las características actuales se alejan del perfil típico de una Hazy IPA exitosa. Revisa especialmente el aroma, la turbidez y el balance de amargor.</p>
+                    {% endif %}
+                    
+                    <h5 class="fw-bold mt-4 mb-3">Recomendaciones:</h5>
+                    <ul class="mb-0">
+                        {% if resultado.caracteristicas.Aroma|replace('/10', '')|float < 7 %}
+                        <li class="mb-2"><i class="fas fa-arrow-right text-warning me-2"></i>Considera aumentar la intensidad aromática mediante dry hopping tardío</li>
+                        {% endif %}
+                        {% if resultado.caracteristicas.Turbidez|replace('/10', '')|float < 7 %}
+                        <li class="mb-2"><i class="fas fa-arrow-right text-warning me-2"></i>Incrementa la turbidez con adición de avena o trigo en la receta</li>
+                        {% endif %}
+                        {% if resultado.caracteristicas.IBU < 30 %}
+                        <li class="mb-2"><i class="fas fa-arrow-right text-warning me-2"></i>Considera aumentar ligeramente el amargor para mejor balance</li>
+                        {% endif %}
+                        {% if resultado.caracteristicas.ABV|replace('%', '')|float < 6 %}
+                        <li class="mb-2"><i class="fas fa-arrow-right text-warning me-2"></i>Un ABV más alto (6-7%) es típico para Hazy IPA</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comparación -->
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="card-beer p-4">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">
+                        <i class="fas fa-chart-bar text-warning me-2"></i>
+                        Comparación con el Promedio
+                    </h4>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Promedio Hazy IPA</span>
+                            <span class="fw-bold">3.8/5.0</span>
+                        </div>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-secondary" style="width: 76%;">
+                                3.8
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if resultado.puntuacion > 3.8 %}
+                    <p class="text-success mb-0">
+                        <i class="fas fa-arrow-up me-2"></i>
+                        <strong>¡Tu cerveza supera el promedio!</strong> Está {{ ((resultado.puntuacion - 3.8) / 3.8 * 100)|round(1) }}% por encima del estándar.
+                    </p>
+                    {% else %}
+                    <p class="text-warning mb-0">
+                        <i class="fas fa-arrow-down me-2"></i>
+                        Hay margen de mejora para alcanzar el promedio del mercado.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Acciones -->
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card-beer p-4 text-center">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">¿Qué hacer ahora?</h4>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('prediccion') }}" class="btn btn-beer">
+                            <i class="fas fa-redo me-2"></i>Nueva Predicción
+                        </a>
+                        <a href="{{ url_for('proyecto') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-info-circle me-2"></i>Sobre el Proyecto
+                        </a>
+                        <button onclick="window.print()" class="btn btn-outline-secondary">
+                            <i class="fas fa-print me-2"></i>Imprimir Resultados
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Share Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto text-center">
+                <h3 class="fw-bold mb-3" style="color: var(--beer-dark);">Comparte tus Resultados</h3>
+                <p class="text-muted mb-4">¡Muéstrales a todos tu cerveza Hazy!</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-outline-primary">
+                        <i class="fab fa-facebook me-2"></i>Facebook
+                    </button>
+                    <button class="btn btn-outline-info">
+                        <i class="fab fa-twitter me-2"></i>Twitter
+                    </button>
+                    <button class="btn btn-outline-success">
+                        <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animación de confetti para puntuaciones altas
+    {% if resultado.puntuacion >= 4.5 %}
+    document.addEventListener('DOMContentLoaded', function() {
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.background = ['#F5A623', '#D4A574', '#2C1810'][Math.floor(Math.random() * 3)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }, i * 50);
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}<span>Tu Cerveza</span>
+                            <span class="fw-bold text-{{ resultado.color }}">{{ resultado.puntuacion }}/5.0</span>
+                        </div>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-{{ resultado.color }}" style="width: {{ (resultado.puntuacion / 5 * 100)|int }}%;">
+                                {{ resultado.puntuacion }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">

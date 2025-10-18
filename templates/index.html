@@ -1,319 +1,188 @@
-<!DOCTYPE html>
-<html lang="es" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto Aulas Espejo - Inicio</title>
+{% extends "base.html" %}
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CSS Inline para probar -->
-    <style>
-        .hero-section {
-            background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%);
-            min-height: 75vh;
-        }
-        
-        .btn-gradient-primary {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            border: none;
-            color: white;
-        }
-        
-        .btn-gradient-primary:hover {
-            background: linear-gradient(135deg, #1d4ed8, #2563eb);
-            color: white;
-        }
-        
-        .card-hover {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15) !important;
-        }
-        
-        .avatar-circle {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        .universidad-badge {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            border-radius: 12px;
-            color: white;
-        }
-        
-        .footer {
-            background: linear-gradient(135deg, #1f2937, #111827);
-        }
-    </style>
-</head>
-<body class="d-flex flex-column min-vh-100">
+{% block title %}Inicio - Beer Hazy Predictor{% endblock %}
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <i class="fas fa-chalkboard-teacher me-2 text-primary"></i>
-                Proyecto Aulas Espejo
-            </a>
-
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#inicio"><i class="fas fa-home me-1"></i> Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#proyecto"><i class="fas fa-info-circle me-1"></i> Proyecto</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#objetivos"><i class="fas fa-bullseye me-1"></i> Objetivos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#universidades"><i class="fas fa-university me-1"></i> Universidades</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#equipo"><i class="fas fa-users me-1"></i> Equipo</a></li>
-                </ul>
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-beer">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <h1 class="hero-title" data-aos="fade-right">Hazy IPA Predictor</h1>
+                <p class="hero-subtitle" data-aos="fade-right" data-aos-delay="100">
+                    Predice la aceptación de tu cerveza artesanal con Machine Learning
+                </p>
+                <p class="text-white mb-4" style="font-size: 1.1rem;" data-aos="fade-right" data-aos-delay="200">
+                    Sistema inteligente que analiza características organolépticas y físicas para predecir el nivel de aceptación de cervezas estilo Hazy IPA.
+                </p>
+                <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
+                    <a href="{{ url_for('prediccion') }}" class="btn btn-beer">
+                        <i class="fas fa-flask me-2"></i>Probar Predictor
+                    </a>
+                    <a href="{{ url_for('proyecto') }}" class="btn btn-beer-outline">
+                        <i class="fas fa-info-circle me-2"></i>Conocer Más
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="400">
+                <i class="fas fa-beer" style="font-size: 15rem; color: var(--beer-amber); opacity: 0.3;"></i>
             </div>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <!-- Main Content -->
-    <main class="flex-grow-1">
-        <!-- Hero Section -->
-        <section id="inicio" class="hero-section text-white py-5 d-flex align-items-center">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-7">
-                        <h1 class="display-3 fw-bold mb-3">Proyecto Aulas Espejo</h1>
-                        <p class="lead mb-4">Colaboración Internacional en Educación Superior</p>
-                        <p class="fs-5 mb-4">Iniciativa de colaboración académica internacional que conecta estudiantes y docentes de diferentes universidades.</p>
-                        <div class="d-flex flex-wrap gap-3">
-                            <a href="#proyecto" class="btn btn-gradient-primary btn-lg px-4">
-                                <i class="fas fa-rocket me-2"></i>Explorar Proyecto
-                            </a>
-                            <a href="#equipo" class="btn btn-outline-light btn-lg px-4">
-                                <i class="fas fa-users me-2"></i>Conocer Equipo
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                        <i class="fas fa-globe display-1 text-primary mb-3"></i>
-                        <div class="bg-primary bg-opacity-25 p-4 rounded-circle d-inline-block">
-                            <i class="fas fa-handshake display-4 text-white"></i>
-                        </div>
-                    </div>
+<!-- Stats Section -->
+<section class="stats-beer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item">
+                    <div class="stat-number">{{ project.metricas.r2 * 100 }}%</div>
+                    <div class="stat-label">Precisión R²</div>
                 </div>
             </div>
-        </section>
-
-        <!-- Stats Section -->
-        <section class="py-5 bg-dark">
-            <div class="container">
-                <div class="row g-4 text-center">
-                    <div class="col-md-3 col-6">
-                        <i class="fas fa-calendar-alt text-primary fs-1 mb-3"></i>
-                        <h3 class="fw-bold">5 Meses</h3>
-                        <p class="text-muted mb-0">Duración</p>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <i class="fas fa-user-graduate text-success fs-1 mb-3"></i>
-                        <h3 class="fw-bold">83</h3>
-                        <p class="text-muted mb-0">Estudiantes</p>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <i class="fas fa-university text-warning fs-1 mb-3"></i>
-                        <h3 class="fw-bold">2</h3>
-                        <p class="text-muted mb-0">Universidades</p>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <i class="fas fa-laptop text-info fs-1 mb-3"></i>
-                        <h3 class="fw-bold">Virtual</h3>
-                        <p class="text-muted mb-0">Modalidad</p>
-                    </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item">
+                    <div class="stat-number">{{ project.metricas.mae }}</div>
+                    <div class="stat-label">Error MAE</div>
                 </div>
             </div>
-        </section>
-
-        <!-- Objetivos Section -->
-        <section id="objetivos" class="py-5">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold mb-3">
-                        <i class="fas fa-bullseye text-primary me-2"></i>
-                        Objetivos del Proyecto
-                    </h2>
-                    <p class="lead text-muted">Metas que guían nuestra colaboración internacional</p>
-                </div>
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="card h-100 card-hover border-0 shadow-lg">
-                            <div class="card-body text-center p-4">
-                                <i class="fas fa-globe-americas display-4 text-primary mb-4"></i>
-                                <h4 class="card-title fw-bold mb-3">Intercambio Cultural</h4>
-                                <p class="card-text text-muted">Fomentar el entendimiento intercultural y la colaboración entre estudiantes de diferentes países</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 card-hover border-0 shadow-lg">
-                            <div class="card-body text-center p-4">
-                                <i class="fas fa-lightbulb display-4 text-primary mb-4"></i>
-                                <h4 class="card-title fw-bold mb-3">Innovación Pedagógica</h4>
-                                <p class="card-text text-muted">Implementar metodologías de enseñanza colaborativas y tecnologías educativas avanzadas</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 card-hover border-0 shadow-lg">
-                            <div class="card-body text-center p-4">
-                                <i class="fas fa-users-cog display-4 text-primary mb-4"></i>
-                                <h4 class="card-title fw-bold mb-3">Desarrollo de Competencias</h4>
-                                <p class="card-text text-muted">Fortalecer habilidades de comunicación, trabajo en equipo y pensamiento crítico</p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Universidades</div>
                 </div>
             </div>
-        </section>
-
-        <!-- Universidades Section -->
-        <section id="universidades" class="py-5 bg-dark">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold mb-3">
-                        <i class="fas fa-university text-primary me-2"></i>
-                        Universidades Participantes
-                    </h2>
-                </div>
-                <div class="row g-4 justify-content-center">
-                    <div class="col-lg-5 col-md-6">
-                        <div class="card h-100 border-0 shadow-lg card-hover">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="universidad-badge me-3">
-                                        <i class="fas fa-graduation-cap fs-2"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-1 fw-bold">Universidad Principal</h4>
-                                        <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i> Bogotá, Colombia</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="mb-2"><i class="fas fa-building text-primary me-2"></i><strong>Facultad:</strong> Ingeniería de Sistemas</p>
-                                    <p class="mb-0"><i class="fas fa-users text-success me-2"></i><strong>Estudiantes:</strong> 45</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-6">
-                        <div class="card h-100 border-0 shadow-lg card-hover">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="universidad-badge me-3">
-                                        <i class="fas fa-graduation-cap fs-2"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-1 fw-bold">Universidad Colaboradora</h4>
-                                        <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i> Ciudad, País</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p class="mb-2"><i class="fas fa-building text-primary me-2"></i><strong>Facultad:</strong> Ciencias de la Computación</p>
-                                    <p class="mb-0"><i class="fas fa-users text-success me-2"></i><strong>Estudiantes:</strong> 38</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Equipo Section -->
-        <section id="equipo" class="py-5">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold mb-3">
-                        <i class="fas fa-users text-primary me-2"></i>
-                        Equipo del Proyecto
-                    </h2>
-                </div>
-                <div class="row g-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 card-hover border-0 shadow-lg">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-circle mx-auto mb-3">DN</div>
-                                <h5 class="fw-bold mb-2">Dr. Nombre Apellido</h5>
-                                <p class="text-primary fw-semibold mb-2">Director del Proyecto</p>
-                                <p class="text-muted small mb-3"><i class="fas fa-university me-1"></i> Universidad Principal</p>
-                                <a href="mailto:director@universidad.edu" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-envelope me-1"></i>Contactar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 card-hover border-0 shadow-lg">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-circle mx-auto mb-3">DN</div>
-                                <h5 class="fw-bold mb-2">Dra. Nombre Apellido</h5>
-                                <p class="text-primary fw-semibold mb-2">Co-directora</p>
-                                <p class="text-muted small mb-3"><i class="fas fa-university me-1"></i> Universidad Colaboradora</p>
-                                <a href="mailto:codirectora@universidad.edu" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-envelope me-1"></i>Contactar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 card-hover border-0 shadow-lg">
-                            <div class="card-body text-center p-4">
-                                <div class="avatar-circle mx-auto mb-3">NA</div>
-                                <h5 class="fw-bold mb-2">Nombre Apellido</h5>
-                                <p class="text-primary fw-semibold mb-2">Coordinador Técnico</p>
-                                <p class="text-muted small mb-3"><i class="fas fa-university me-1"></i> Universidad Principal</p>
-                                <a href="mailto:coordinador@universidad.edu" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-envelope me-1"></i>Contactar
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer text-white py-4 mt-auto">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h5 class="mb-2"><i class="fas fa-chalkboard-teacher me-2"></i> Proyecto Aulas Espejo</h5>
-                    <p class="mb-0">Colaboración Internacional en Educación Superior</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-1">&copy; 2025 Universidad Principal</p>
-                    <p class="mb-0 small">Todos los derechos reservados</p>
+            <div class="col-md-3 col-6 mb-4">
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Investigadores</div>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
-</html>
+<!-- Características Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3" style="color: var(--beer-dark);">
+                ¿Cómo Funciona?
+            </h2>
+            <p class="lead text-muted">Nuestro modelo analiza múltiples características de tu cerveza</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-beer h-100 p-4 text-center">
+                    <i class="fas fa-percentage" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Análisis Químico</h4>
+                    <p class="text-muted">ABV, IBU, densidades inicial y final, SRM - todos los parámetros técnicos</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card-beer h-100 p-4 text-center">
+                    <i class="fas fa-brain" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Machine Learning</h4>
+                    <p class="text-muted">Algoritmos de regresión entrenados con cientos de cervezas Hazy</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card-beer h-100 p-4 text-center">
+                    <i class="fas fa-star" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Predicción</h4>
+                    <p class="text-muted">Obtén una calificación de 0-5 estrellas con nivel de confianza</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Características Evaluadas -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3" style="color: var(--beer-dark);">
+                Características Evaluadas
+            </h2>
+            <p class="lead text-muted">Parámetros clave para la predicción</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beer p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-info bg-opacity-25 p-3 me-3">
+                            <i class="fas fa-palette" style="font-size: 1.5rem; color: #06b6d4;"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0" style="font-weight: 700;">SRM</h5>
+                            <small class="text-muted">Color</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Medida estándar del color de la cerveza</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beer p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-danger bg-opacity-25 p-3 me-3">
+                            <i class="fas fa-nose" style="font-size: 1.5rem; color: #ef4444;"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0" style="font-weight: 700;">Aroma</h5>
+                            <small class="text-muted">Perfil Olfativo</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Intensidad y calidad del aroma característico</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--beer-amber) 0%, var(--beer-gold) 100%);">
+    <div class="container text-center">
+        <h2 class="display-5 fw-bold text-white mb-4">¿Listo para Predecir?</h2>
+        <p class="lead text-white mb-4">Ingresa las características de tu cerveza Hazy y descubre su potencial</p>
+        <a href="{{ url_for('prediccion') }}" class="btn btn-beer-outline btn-lg">
+            <i class="fas fa-flask me-2"></i>Comenzar Predicción
+        </a>
+    </div>
+</section>
+{% endblock %}beer p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-warning bg-opacity-25 p-3 me-3">
+                            <i class="fas fa-wine-bottle" style="font-size: 1.5rem; color: var(--beer-amber);"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0" style="font-weight: 700;">ABV</h5>
+                            <small class="text-muted">Alcohol por Volumen</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Porcentaje de alcohol que influye en el cuerpo y sabor</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beer p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-success bg-opacity-25 p-3 me-3">
+                            <i class="fas fa-leaf" style="font-size: 1.5rem; color: #10b981;"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0" style="font-weight: 700;">IBU</h5>
+                            <small class="text-muted">Amargor</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Unidades de amargor que definen el perfil lupulado</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card-

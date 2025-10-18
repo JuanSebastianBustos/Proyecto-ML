@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Proyecto - Beer Hazy Predictor{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-beer" style="min-height: 50vh;">
+    <div class="container">
+        <div class="hero-content text-center">
+            <h1 class="hero-title">El Proyecto</h1>
+            <p class="hero-subtitle">Ciencia de Datos aplicada a la Cerveza Artesanal</p>
+        </div>
+    </div>
+</section>
+
+<!-- Descripción General -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="display-6 fw-bold mb-4" style="color: var(--beer-dark);">Descripción General</h2>
+                <p class="lead mb-4">{{ project.descripcion }}</p>
+                <p class="mb-4">Las cervezas Hazy IPA son conocidas por su aspecto turbio, cuerpo cremoso y explosión de
+                    sabores frutales. Este proyecto utiliza Machine Learning para predecir la aceptación del consumidor
+                    basándose en características medibles.</p>
+                <div class="alert" style="background: var(--beer-cream); border-left: 4px solid var(--beer-amber);">
+                    <i class="fas fa-lightbulb text-warning me-2"></i>
+                    <strong>Innovación:</strong> Primera herramienta predictiva enfocada específicamente en cervezas
+                    Hazy IPA en Latinoamérica.
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-beer p-4">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">
+                        <i class="fas fa-bullseye text-warning me-2"></i>Objetivo General
+                    </h4>
+                    <p class="mb-0">{{ project.objetivo_general }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Objetivos Específicos -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="display-6 fw-bold text-center mb-5" style="color: var(--beer-dark);">Objetivos Específicos</h2>
+        <div class="row g-4">
+            {% for objetivo in project.objetivos_especificos %}
+            <div class="col-md-6">
+                <div class="card-beer p-4 h-100">
+                    <div class="d-flex align-items-start">
+                        <div class="rounded-circle bg-warning bg-opacity-25 p-3 me-3 flex-shrink-0">
+                            <i class="fas fa-check" style="color: var(--beer-amber);"></i>
+                        </div>
+                        <p class="mb-0">{{ objetivo }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Tecnologías -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="display-6 fw-bold text-center mb-5" style="color: var(--beer-dark);">
+            Tecnologías Utilizadas
+        </h2>
+        <div class="row g-4 justify-content-center">
+            {% for tech in project.tecnologias %}
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="card-beer p-4 text-center h-100">
+                    <i class="{{ tech.icono }}" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h6 class="mt-3 mb-0 fw-bold">{{ tech.nombre }}</h6>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Metodología -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="display-6 fw-bold text-center mb-5" style="color: var(--beer-dark);">Metodología</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card-beer p-4 text-center h-100">
+                    <div class="rounded-circle mx-auto mb-3"
+                        style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: 900; font-size: 1.5rem;">1</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Recolección</h5>
+                    <p class="text-muted mb-0">Dataset de cervezas Hazy con características físicas y organolépticas</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card-beer p-4 text-center h-100">
+                    <div class="rounded-circle mx-auto mb-3"
+                        style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: 900; font-size: 1.5rem;">2</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Preprocesamiento</h5>
+                    <p class="text-muted mb-0">Limpieza, normalización y análisis exploratorio de datos</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card-beer p-4 text-center h-100">
+                    <div class="rounded-circle mx-auto mb-3"
+                        style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: 900; font-size: 1.5rem;">3</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Entrenamiento</h5>
+                    <p class="text-muted mb-0">Regresión lineal, Random Forest y Gradient Boosting</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card-beer p-4 text-center h-100">
+                    <div class="rounded-circle mx-auto mb-3"
+                        style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: 900; font-size: 1.5rem;">4</span>
+                    </div>
+                    <h5 class="fw-bold mb-3">Evaluación</h5>
+                    <p class="text-muted mb-0">Métricas R², MAE, RMSE y validación cruzada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dataset y Variables -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="display-6 fw-bold text-center mb-5" style="color: var(--beer-dark);">Dataset y Variables</h2>
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card-beer p-4 h-100">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">
+                        <i class="fas fa-database text-warning me-2"></i>Variables de Entrada
+                    </h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>ABV:</strong> Alcohol por volumen (%)
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>IBU:</strong> Unidades internacionales de amargor
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>SRM:</strong> Color de la cerveza (Standard Reference Method)
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>OG:</strong> Densidad inicial (Original Gravity)
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>FG:</strong> Densidad final (Final Gravity)
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>Aroma:</strong> Intensidad aromática (1-10)
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <strong>Turbidez:</strong> Nivel de opacidad (1-10)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card-beer p-4 h-100">
+                    <h4 class="fw-bold mb-4" style="color: var(--beer-dark);">
+                        <i class="fas fa-chart-line text-warning me-2"></i>Métricas de Desempeño
+                    </h4>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">Coeficiente R²</span>
+                            <span class="badge bg-success">{{ (project.metricas.r2 * 100)|int }}%</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            {% set r2_percent = ((project.metricas.r2 | default(0)) * 100) | int %}
+                            <div class="progress-bar bg-success" style="width: {{ r2_percent ~ '%' }};"></div>
+                        </div>
+                        <small class="text-muted">Capacidad explicativa del modelo</small>
+                    </div>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">MAE (Error Medio Absoluto)</span>
+                            <span class="badge bg-info">{{ project.metricas.mae }}</span>
+                        </div>
+                        <small class="text-muted">Promedio de error en las predicciones</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold">RMSE (Raíz del Error Cuadrático Medio)</span>
+                            <span class="badge bg-warning">{{ project.metricas.rmse }}</span>
+                        </div>
+                        <small class="text-muted">Penalización de errores grandes</small>
+                    </div>
+
+                    <div class="alert" style="background: var(--beer-cream); border: none;">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        <small><strong>Nota:</strong> Valores óptimos indican alta precisión predictiva del
+                            modelo.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modelos Probados -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="display-6 fw-bold text-center mb-5" style="color: var(--beer-dark);">Modelos Evaluados</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-beer p-4 text-center h-100">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h5 class="fw-bold mt-3 mb-3">Regresión Lineal</h5>
+                    <p class="text-muted mb-3">Modelo base para establecer relaciones lineales entre variables</p>
+                    <span class="badge bg-warning">R²: 0.75</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-beer p-4 text-center h-100" style="border: 3px solid var(--beer-amber);">
+                    <i class="fas fa-trophy" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h5 class="fw-bold mt-3 mb-3">Random Forest</h5>
+                    <p class="text-muted mb-3">Mejor desempeño con combinación de árboles de decisión</p>
+                    <span class="badge bg-success">R²: 0.87</span>
+                    <div class="mt-2">
+                        <span class="badge" style="background: var(--beer-amber);">SELECCIONADO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-beer p-4 text-center h-100">
+                    <i class="fas fa-rocket" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h5 class="fw-bold mt-3 mb-3">Gradient Boosting</h5>
+                    <p class="text-muted mb-3">Alto rendimiento pero mayor complejidad computacional</p>
+                    <span class="badge bg-info">R²: 0.84</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--beer-dark) 0%, var(--beer-brown) 100%);">
+    <div class="container text-center">
+        <h2 class="display-6 fw-bold text-white mb-4">¿Quieres Probar el Modelo?</h2>
+        <p class="lead text-white mb-4">Ingresa las características de tu cerveza y obtén una predicción instantánea</p>
+        <a href="{{ url_for('prediccion') }}" class="btn btn-beer btn-lg">
+            <i class="fas fa-flask me-2"></i>Hacer Predicción
+        </a>
+    </div>
+</section>
+{% endblock %}
