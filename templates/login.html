@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Beer Hazy Predictor{% endblock %}
+
+{% block content %}
+<section class="py-5" style="min-height: 100vh; background: linear-gradient(135deg, var(--beer-dark) 0%, var(--beer-brown) 100%); display: flex; align-items: center;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card-beer p-5 shadow-lg">
+                    <!-- Logo/Icono -->
+                    <div class="text-center mb-4">
+                        <div class="mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-beer" style="font-size: 2.5rem; color: white;"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2" style="color: var(--beer-dark);">Iniciar Sesión</h2>
+                        <p class="text-muted">Bienvenido de vuelta al Beer Hazy Predictor</p>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form method="POST" action="{{ url_for('login') }}">
+                        <!-- Email -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-envelope text-warning me-2"></i>
+                                Correo Electrónico
+                            </label>
+                            <input type="email" class="form-control form-control-lg" name="email" 
+                                   placeholder="tu@email.com" required autofocus>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-lock text-warning me-2"></i>
+                                Contraseña
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" name="password" 
+                                       id="password" placeholder="••••••••" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">
+                                Mantener sesión iniciada
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-beer w-100 btn-lg mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </button>
+
+                        <!-- Divider -->
+                        <div class="text-center my-4">
+                            <span class="text-muted">¿No tienes cuenta?</span>
+                        </div>
+
+                        <!-- Register Link -->
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                        </a>
+                    </form>
+                </div>
+
+                <!-- Back to Home -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('index') }}" class="text-white text-decoration-none">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const password = document.getElementById('password');
+        const icon = this.querySelector('i');
+        
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            password.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+</script>
+{% endblock %}

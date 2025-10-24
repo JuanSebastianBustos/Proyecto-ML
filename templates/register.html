@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Beer Hazy Predictor{% endblock %}
+
+{% block content %}
+<section class="py-5" style="min-height: 100vh; background: linear-gradient(135deg, var(--beer-dark) 0%, var(--beer-brown) 100%); display: flex; align-items: center;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card-beer p-5 shadow-lg">
+                    <!-- Logo/Icono -->
+                    <div class="text-center mb-4">
+                        <div class="mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-plus" style="font-size: 2.5rem; color: white;"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2" style="color: var(--beer-dark);">Crear Cuenta</h2>
+                        <p class="text-muted">Únete a Beer Hazy Predictor</p>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-user text-warning me-2"></i>
+                                Nombre Completo
+                            </label>
+                            <input type="text" class="form-control form-control-lg" name="nombre" 
+                                   placeholder="Juan Pérez" required autofocus>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-envelope text-warning me-2"></i>
+                                Correo Electrónico
+                            </label>
+                            <input type="email" class="form-control form-control-lg" name="email" 
+                                   placeholder="tu@email.com" required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-lock text-warning me-2"></i>
+                                Contraseña
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" name="password" 
+                                       id="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Mínimo 6 caracteres</small>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-lock text-warning me-2"></i>
+                                Confirmar Contraseña
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-lg" name="confirm_password" 
+                                       id="confirm_password" placeholder="Repite tu contraseña" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small id="passwordMatch" class="text-muted"></small>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-beer w-100 btn-lg mb-3">
+                            <i class="fas fa-user-check me-2"></i>Crear Cuenta
+                        </button>
+
+                        <!-- Divider -->
+                        <div class="text-center my-4">
+                            <span class="text-muted">¿Ya tienes cuenta?</span>
+                        </div>
+
+                        <!-- Login Link -->
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </a>
+                    </form>
+                </div>
+
+                <!-- Back to Home -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('index') }}" class="text-white text-decoration-none">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const password = document.getElementById('password');
+        const icon = this.querySelector('i');
+        
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            password.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+        const password = document.getElementById('confirm_password');
+        const icon = this.querySelector('i');
+        
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            password.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Verificar que las contraseñas coincidan
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    const matchMessage = document.getElementById('passwordMatch');
+
+    function checkPasswordMatch() {
+        if (confirmPassword.value === '') {
+            matchMessage.textContent = '';
+            matchMessage.className = 'text-muted';
+            return;
+        }
+        
+        if (password.value === confirmPassword.value) {
+            matchMessage.textContent = '✓ Las contraseñas coinciden';
+            matchMessage.className = 'text-success';
+        } else {
+            matchMessage.textContent = '✗ Las contraseñas no coinciden';
+            matchMessage.className = 'text-danger';
+        }
+    }
+
+    password.addEventListener('input', checkPasswordMatch);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+
+    // Validación del formulario
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('Las contraseñas no coinciden');
+            confirmPassword.focus();
+        }
+    });
+</script>
+{% endblock %}

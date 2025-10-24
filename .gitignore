@@ -1,0 +1,53 @@
+# === Entornos virtuales ===
+venv/
+venv312/
+.env/
+.env.bak/
+
+# === Archivos de caché de Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+
+# === Archivos de configuración locales ===
+instance/
+*.db
+*.sqlite3
+*.log
+*.pid
+
+# === Archivos de dependencias o entornos ===
+*.egg
+*.egg-info/
+.eggs/
+dist/
+build/
+develop-eggs/
+.installed.cfg
+
+# === Archivos del sistema operativo ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Archivos de entorno o claves privadas ===
+.env
+*.env
+
+# === Archivos de IDE (Visual Studio Code, PyCharm, etc.) ===
+.vscode/
+.idea/
+
+# === Archivos de test o reportes temporales ===
+.coverage
+.tox/
+nosetests.xml
+test_results/
+
+# === Archivos de Docker o contenedores (si se usa) ===
+*.dockerfile
+docker-compose.override.yml
+
+# === Archivos de base de datos MySQL (locales o exportados) ===
+*.sql
+*.sql.gz

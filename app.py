@@ -1,16 +1,59 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, session
 import os
 import logging
 from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 import numpy as np
+from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Configuración de base de datos MySQL
+try:
+    import mysql.connector
+    from mysql.connector import Error
+    
+    DB_CONFIG = {
+        'host': 'localhost',
+        'user': 'root',  # Usuario por defecto de XAMPP
+        'password': '',  # Contraseña por defecto de XAMPP (vacía)
+        'database': 'beer_predictor_db'
+    }
+    
+    def get_db_connection():
+        """Crear conexión a la base de datos"""
+        try:
+            connection = mysql.connector.connect(**DB_CONFIG)
+            return connection
+        except Error as e:
+            logger.error(f"Error conectando a MySQL: {e}")
+            return None
+    
+    logger.info("Módulo MySQL disponible")
+except ImportError:
+    logger.warning("MySQL connector no disponible. Instala: pip install mysql-connector-python")
+    DB_CONFIG = None
+    
+    def get_db_connection():
+        return None
+
+# Decorador para rutas protegidas
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Debes iniciar sesión para acceder a esta página', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Información del proyecto
 PROJECT_INFO = {
@@ -90,14 +133,18 @@ PROJECT_INFO = {
 }
 
 # Cargar modelo (crear modelo dummy si no existe)
+model = None
+scaler = None
+
 try:
+    import joblib
     model = joblib.load('model/beer_model.pkl')
     scaler = joblib.load('model/scaler.pkl')
     logger.info("Modelo cargado exitosamente")
-except:
+except ImportError:
+    logger.warning("joblib no disponible")
+except FileNotFoundError:
     logger.warning("Modelo no encontrado, usando predicción simulada")
-    model = None
-    scaler = None
 
 # Manejadores de errores
 @app.errorhandler(404)
@@ -115,7 +162,124 @@ def internal_error(error):
                          error_message="Ha ocurrido un error inesperado.",
                          error_code=500), 500
 
-# Rutas
+# ==============================================
+# RUTAS DE AUTENTICACIÓN
+# ==============================================
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de inicio de sesión"""
+    if 'user_id' in session:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        remember = request.form.get('remember', False)
+        
+        if not email or not password:
+            flash('Por favor completa todos los campos', 'danger')
+            return render_template('login.html', project=PROJECT_INFO)
+        
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor(dictionary=True)
+                cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
+                user = cursor.fetchone()
+                
+                if user and check_password_hash(user['password'], password):
+                    session['user_id'] = user['id']
+                    session['user_name'] = user['nombre']
+                    session['user_email'] = user['email']
+                    
+                    if remember:
+                        session.permanent = True
+                    
+                    flash(f'¡Bienvenido {user["nombre"]}!', 'success')
+                    return redirect(url_for('index'))
+                else:
+                    flash('Correo o contraseña incorrectos', 'danger')
+            except Error as e:
+                logger.error(f"Error en login: {e}")
+                flash('Error al iniciar sesión', 'danger')
+            finally:
+                cursor.close()
+                connection.close()
+        else:
+            flash('Error de conexión a la base de datos', 'danger')
+    
+    return render_template('login.html', project=PROJECT_INFO)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Página de registro de usuarios"""
+    if 'user_id' in session:
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        nombre = request.form.get('nombre', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        
+        # Validaciones
+        if not all([nombre, email, password, confirm_password]):
+            flash('Por favor completa todos los campos', 'danger')
+            return render_template('register.html', project=PROJECT_INFO)
+        
+        if password != confirm_password:
+            flash('Las contraseñas no coinciden', 'danger')
+            return render_template('register.html', project=PROJECT_INFO)
+        
+        if len(password) < 6:
+            flash('La contraseña debe tener al menos 6 caracteres', 'danger')
+            return render_template('register.html', project=PROJECT_INFO)
+        
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                
+                # Verificar si el email ya existe
+                cursor.execute("SELECT id FROM usuarios WHERE email = %s", (email,))
+                if cursor.fetchone():
+                    flash('Este correo ya está registrado', 'warning')
+                    return render_template('register.html', project=PROJECT_INFO)
+                
+                # Crear usuario
+                hashed_password = generate_password_hash(password)
+                cursor.execute(
+                    "INSERT INTO usuarios (nombre, email, password) VALUES (%s, %s, %s)",
+                    (nombre, email, hashed_password)
+                )
+                connection.commit()
+                
+                flash('¡Registro exitoso! Ya puedes iniciar sesión', 'success')
+                return redirect(url_for('login'))
+                
+            except Error as e:
+                logger.error(f"Error en registro: {e}")
+                flash('Error al registrar usuario', 'danger')
+            finally:
+                cursor.close()
+                connection.close()
+        else:
+            flash('Error de conexión a la base de datos', 'danger')
+    
+    return render_template('register.html', project=PROJECT_INFO)
+
+@app.route('/logout')
+def logout():
+    """Cerrar sesión"""
+    session.clear()
+    flash('Sesión cerrada exitosamente', 'info')
+    return redirect(url_for('login'))
+
+# ==============================================
+# RUTAS PÚBLICAS
+# ==============================================
+
 @app.route('/')
 def index():
     return render_template('index.html', project=PROJECT_INFO)
@@ -128,11 +292,17 @@ def proyecto():
 def equipo():
     return render_template('team.html', project=PROJECT_INFO)
 
+# ==============================================
+# RUTAS PROTEGIDAS (requieren login)
+# ==============================================
+
 @app.route('/prediccion')
+@login_required
 def prediccion():
     return render_template('predict.html', project=PROJECT_INFO)
 
 @app.route('/predecir', methods=['POST'])
+@login_required
 def predecir():
     try:
         # Obtener datos del formulario
@@ -201,13 +371,23 @@ def predecir():
         flash("Error al procesar la predicción. Verifica los datos ingresados.", "danger")
         return redirect(url_for('prediccion'))
 
+# ==============================================
+# FUNCIONES DE CONTEXTO
+# ==============================================
+
 @app.context_processor
 def inject_globals():
     return {
         'app_name': PROJECT_INFO['nombre'],
         'app_version': PROJECT_INFO['version'],
-        'current_year': 2025
+        'current_year': 2025,
+        'user_logged_in': 'user_id' in session,
+        'user_name': session.get('user_name', '')
     }
+
+# ==============================================
+# INICIALIZACIÓN
+# ==============================================
 
 if __name__ == '__main__':
     # Crear directorios necesarios
