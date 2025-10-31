@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Análisis de Lote - CHOCOBREW{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-range::-webkit-slider-thumb {
+        background: #8B4513;
+    }
+    
+    .form-range::-moz-range-thumb {
+        background: #8B4513;
+    }
+    
+    .range-value {
+        display: inline-block;
+        width: 70px;
+        text-align: center;
+        font-weight: 700;
+        color: #8B4513;
+        font-size: 1.2rem;
+    }
+    
+    .cacao-theme {
+        background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
+    }
+    
+    .btn-cacao {
+        background: #8B4513;
+        color: white;
+        font-weight: 700;
+        padding: 15px 40px;
+        border-radius: 50px;
+        border: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cacao:hover {
+        background: #A0522D;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(139, 69, 19, 0.4);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="cacao-theme" style="min-height: 40vh; display: flex; align-items: center;">
+    <div class="container">
+        <div class="text-center text-white">
+            <i class="fas fa-mug-hot" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h1 class="display-4 fw-bold">Análisis de Lote</h1>
+            <p class="lead">CHOCOBREW - Cerveza Artesanal de Cacao</p>
+        </div>
+    </div>
+</section>
+
+<!-- Formulario -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card-beer p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold mb-3" style="color: #3E2723;">Registro de Nuevo Lote</h2>
+                        <p class="text-muted">Completa la información para generar el código QR y predicción de calidad</p>
+                    </div>
+                    
+                    <form action="{{ url_for('procesar_lote') }}" method="POST" id="loteForm">
+                        <!-- Información del Lote -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-barcode text-warning me-2"></i>
+                                    Código de Lote *
+                                </label>
+                                <input type="text" class="form-control form-control-lg" name="codigo_lote" 
+                                       placeholder="Ej: CHOCO-2025-001" required>
+                                <small class="text-muted">Identificador único del lote</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-calendar text-warning me-2"></i>
+                                    Fecha de Elaboración *
+                                </label>
+                                <input type="date" class="form-control form-control-lg" name="fecha_elaboracion" 
+                                       max="{{ current_year }}-12-31" required>
+                                <small class="text-muted">Fecha de embotellado</small>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <h4 class="fw-bold mb-3" style="color: #3E2723;">Características de la Cerveza</h4>
+
+                        <!-- ABV -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-percentage text-danger me-2"></i>
+                                ABV - Alcohol por Volumen
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="abv" name="abv" 
+                                       min="4" max="10" step="0.1" value="6.5" oninput="updateValue('abv')">
+                                <span class="range-value" id="abv-value">6.5%</span>
+                            </div>
+                            <small class="text-muted">Típico para cerveza artesanal: 5.5% - 8.0%</small>
+                        </div>
+
+                        <!-- IBU -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-leaf text-success me-2"></i>
+                                IBU - Unidades de Amargor
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="ibu" name="ibu" 
+                                       min="15" max="70" step="1" value="35" oninput="updateValue('ibu')">
+                                <span class="range-value" id="ibu-value">35</span>
+                            </div>
+                            <small class="text-muted">Rango típico: 25 - 50 IBU</small>
+                        </div>
+
+                        <!-- SRM -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-palette text-info me-2"></i>
+                                SRM - Color
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="srm" name="srm" 
+                                       min="10" max="40" step="1" value="20" oninput="updateValue('srm')">
+                                <span class="range-value" id="srm-value">20</span>
+                            </div>
+                            <small class="text-muted">Con cacao: 15 - 30 SRM (marrón oscuro)</small>
+                        </div>
+
+                        <!-- Porcentaje de Cacao (NUEVO) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-seedling" style="color: #8B4513;" class="me-2"></i>
+                                Porcentaje de Cacao Ecuatoriano
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="porcentaje_cacao" name="porcentaje_cacao" 
+                                       min="2" max="15" step="0.5" value="8" oninput="updateValue('porcentaje_cacao')">
+                                <span class="range-value" id="porcentaje_cacao-value">8.0%</span>
+                            </div>
+                            <small class="text-muted">Cacao fino de aroma - Característico de CHOCOBREW</small>
+                        </div>
+
+                        <!-- OG -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-tint text-primary me-2"></i>
+                                OG - Densidad Inicial
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="og" name="og" 
+                                       min="1.045" max="1.080" step="0.001" value="1.060" oninput="updateValue('og')">
+                                <span class="range-value" id="og-value">1.060</span>
+                            </div>
+                            <small class="text-muted">Densidad antes de fermentar</small>
+                        </div>
+
+                        <!-- FG -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-flask text-secondary me-2"></i>
+                                FG - Densidad Final
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="fg" name="fg" 
+                                       min="1.008" max="1.020" step="0.001" value="1.012" oninput="updateValue('fg')">
+                                <span class="range-value" id="fg-value">1.012</span>
+                            </div>
+                            <small class="text-muted">Densidad después de fermentar</small>
+                        </div>
+
+                        <!-- Días de Fermentación -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                Días de Fermentación
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="dias_fermentacion" name="dias_fermentacion" 
+                                       min="5" max="14" step="1" value="7" oninput="updateValue('dias_fermentacion')">
+                                <span class="range-value" id="dias_fermentacion-value">7</span>
+                            </div>
+                            <small class="text-muted">Típico: 7 días según tu proceso</small>
+                        </div>
+
+                        <!-- Días de Maduración -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-hourglass-half text-info me-2"></i>
+                                Días de Maduración
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input type="range" class="form-range me-3" id="dias_maduracion" name="dias_maduracion" 
+                                       min="7" max="21" step="1" value="12" oninput="updateValue('dias_maduracion')">
+                                <span class="range-value" id="dias_maduracion-value">12</span>
+                            </div>
+                            <small class="text-muted">Típico: 10-15 días según tu proceso</small>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-cacao btn-lg px-5">
+                                <i class="fas fa-qrcode me-2"></i>Generar Análisis y Código QR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card-beer p-4">
+                    <h4 class="fw-bold mb-4" style="color: #3E2723;">
+                        <i class="fas fa-info-circle me-2" style="color: #8B4513;"></i>
+                        ¿Qué se genera?
+                    </h4>
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-qrcode" style="font-size: 3rem; color: #8B4513;"></i>
+                                <h6 class="fw-bold mt-3">Código QR</h6>
+                                <p class="text-muted small mb-0">Para etiquetar el producto físico</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-star" style="font-size: 3rem; color: #FFD700;"></i>
+                                <h6 class="fw-bold mt-3">Calificación</h6>
+                                <p class="text-muted small mb-0">Predicción de calidad del lote</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-calendar-times" style="font-size: 3rem; color: #dc3545;"></i>
+                                <h6 class="fw-bold mt-3">Vencimiento</h6>
+                                <p class="text-muted small mb-0">120 días desde elaboración</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-apple-alt" style="font-size: 3rem; color: #28a745;"></i>
+                                <h6 class="fw-bold mt-3">Tabla Nutricional</h6>
+                                <p class="text-muted small mb-0">Valores por 100ml</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateValue(id) {
+        const input = document.getElementById(id);
+        const display = document.getElementById(id + '-value');
+        let value = parseFloat(input.value);
+        
+        if (id === 'abv') {
+            display.textContent = value.toFixed(1) + '%';
+        } else if (id === 'og' || id === 'fg') {
+            display.textContent = value.toFixed(3);
+        } else if (id === 'porcentaje_cacao') {
+            display.textContent = value.toFixed(1) + '%';
+        } else {
+            display.textContent = Math.round(value);
+        }
+    }
+    
+    // Validación
+    document.getElementById('loteForm').addEventListener('submit', function(e) {
+        const og = parseFloat(document.getElementById('og').value);
+        const fg = parseFloat(document.getElementById('fg').value);
+        
+        if (fg >= og) {
+            e.preventDefault();
+            alert('Error: La densidad final (FG) debe ser menor que la inicial (OG)');
+            return false;
+        }
+    });
+    
+    // Fecha máxima = hoy
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="fecha_elaboracion"]').value = today;
+    });
+</script>
+{% endblock %}

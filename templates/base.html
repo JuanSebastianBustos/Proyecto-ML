@@ -238,7 +238,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-beer me-2"></i>HAZY PREDICTOR
+                <i class="fas fa-beer me-2"></i>CHOCOBREW
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -262,17 +262,26 @@
                             Equipo
                         </a>
                     </li>
+                    {% if user_logged_in %}
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'prediccion' %}active{% endif %}" href="{{ url_for('prediccion') }}">
-                            Predicción ML
+                        <a class="nav-link {% if request.endpoint == 'analisis' %}active{% endif %}" href="{{ url_for('analisis') }}">
+                            Nuevo Lote
                         </a>
                     </li>
-                    {% if user_logged_in %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'mis_lotes' %}active{% endif %}" href="{{ url_for('mis_lotes') }}">
+                            Mis Lotes
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle me-1"></i>{{ user_name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('mis_lotes') }}">
+                                <i class="fas fa-boxes me-2"></i>Mis Lotes
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('logout') }}">
                                 <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                             </a></li>
@@ -312,8 +321,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <h5><i class="fas fa-beer me-2"></i>Beer Hazy Predictor</h5>
-                    <p>Proyecto de colaboración internacional en Machine Learning aplicado a la industria cervecera artesanal.</p>
+                    <h5><i class="fas fa-beer me-2"></i>CHOCOBREW</h5>
+                    <p>Proyecto de colaboración internacional en Machine Learning aplicado a cerveza artesanal de cacao ecuatoriano.</p>
                 </div>
                 <div class="col-md-4 mb-4">
                     <h5>Universidades</h5>
@@ -324,12 +333,15 @@
                     <h5>Enlaces</h5>
                     <p><a href="{{ url_for('proyecto') }}"><i class="fas fa-flask me-2"></i>Sobre el Proyecto</a></p>
                     <p><a href="{{ url_for('equipo') }}"><i class="fas fa-users me-2"></i>Nuestro Equipo</a></p>
-                    <p><a href="{{ url_for('prediccion') }}"><i class="fas fa-brain me-2"></i>Hacer Predicción</a></p>
+                    {% if user_logged_in %}
+                    <p><a href="{{ url_for('analisis') }}"><i class="fas fa-qrcode me-2"></i>Nuevo Lote</a></p>
+                    <p><a href="{{ url_for('mis_lotes') }}"><i class="fas fa-boxes me-2"></i>Mis Lotes</a></p>
+                    {% endif %}
                 </div>
             </div>
             <hr style="border-color: var(--beer-gold); opacity: 0.3;">
             <div class="text-center">
-                <p class="mb-0">&copy; 2025 Beer Hazy Predictor | Proyecto Aulas Espejo</p>
+                <p class="mb-0">&copy; 2025 CHOCOBREW | Proyecto Aulas Espejo | Sistema de Análisis ML</p>
             </div>
         </div>
     </footer>

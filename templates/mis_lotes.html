@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Lotes - CHOCOBREW{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cacao-theme {
+        background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
+    }
+    
+    .lote-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .lote-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(139, 69, 19, 0.3);
+    }
+    
+    .badge-categoria {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #8B4513;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="cacao-theme" style="min-height: 30vh; display: flex; align-items: center;">
+    <div class="container text-center text-white">
+        <i class="fas fa-boxes" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+        <h1 class="display-5 fw-bold">Mis Lotes</h1>
+        <p class="lead">Gestión de lotes de CHOCOBREW</p>
+    </div>
+</section>
+
+<!-- Estadísticas Rápidas -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="text-center">
+                    <div class="stats-number">{{ lotes|length }}</div>
+                    <div class="text-muted fw-bold">Total Lotes</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="text-center">
+                    <div class="stats-number">
+                        {% if lotes|length > 0 %}
+                            {% set suma_puntuaciones = [] %}
+                            {% for lote in lotes %}
+                                {% set _ = suma_puntuaciones.append(lote.puntuacion) %}
+                            {% endfor %}
+                            {{ "%.1f"|format(suma_puntuaciones|sum / lotes|length) }}
+                        {% else %}
+                            0.0
+                        {% endif %}
+                    </div>
+                    <div class="text-muted fw-bold">Promedio Calidad</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="text-center">
+                    <div class="stats-number">
+                        {% set premium_count = [] %}
+                        {% for lote in lotes %}
+                            {% if lote.categoria == 'Premium' %}
+                                {% set _ = premium_count.append(1) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ premium_count|length }}
+                    </div>
+                    <div class="text-muted fw-bold">Premium</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="text-center">
+                    <div class="stats-number">
+                        {% set excelente_count = [] %}
+                        {% for lote in lotes %}
+                            {% if lote.categoria == 'Excelente' %}
+                                {% set _ = excelente_count.append(1) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ excelente_count|length }}
+                    </div>
+                    <div class="text-muted fw-bold">Excelentes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Botón Nuevo Lote -->
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="fw-bold" style="color: #3E2723;">
+                <i class="fas fa-list me-2"></i>Historial de Lotes
+            </h3>
+            <a href="{{ url_for('analisis') }}" class="btn btn-lg" style="background: #8B4513; color: white;">
+                <i class="fas fa-plus me-2"></i>Nuevo Lote
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Lista de Lotes -->
+<section class="py-4">
+    <div class="container">
+        {% if lotes %}
+        <div class="row g-4">
+            {% for lote in lotes %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card-beer lote-card h-100">
+                    <div class="card-body">
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1" style="color: #3E2723;">{{ lote.codigo_lote }}</h5>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ lote.fecha_elaboracion.strftime('%d/%m/%Y') }}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <div style="font-size: 2rem; font-weight: 900; color: #8B4513;">
+                                    {{ "%.1f"|format(lote.puntuacion|float) }}
+                                </div>
+                                <div class="stars" style="color: #FFD700;">
+                                    {% set puntuacion_float = lote.puntuacion|float %}
+                                    {% for i in range(5) %}
+                                        {% if i < puntuacion_float|int %}
+                                            <i class="fas fa-star"></i>
+                                        {% elif i < (puntuacion_float|int + 1) and (puntuacion_float - puntuacion_float|int) >= 0.5 %}
+                                            <i class="fas fa-star-half-alt"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="mb-3">
+                            <span class="badge badge-categoria w-100" 
+                                  style="background: {% if lote.categoria == 'Premium' %}#28a745{% elif lote.categoria == 'Excelente' %}#17a2b8{% elif lote.categoria == 'Muy Buena' %}#007bff{% elif lote.categoria == 'Buena' %}#ffc107{% else %}#6c757d{% endif %};">
+                                {{ lote.categoria }}
+                            </span>
+                        </div>
+
+                        <!-- Características -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div class="p-2 rounded text-center" style="background: #F5F5DC;">
+                                    <div class="text-muted small">ABV</div>
+                                    <div class="fw-bold">{{ lote.abv }}%</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded text-center" style="background: #F5F5DC;">
+                                    <div class="text-muted small">Cacao</div>
+                                    <div class="fw-bold">{{ lote.porcentaje_cacao }}%</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded text-center" style="background: #F5F5DC;">
+                                    <div class="text-muted small">IBU</div>
+                                    <div class="fw-bold">{{ lote.ibu }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded text-center" style="background: #F5F5DC;">
+                                    <div class="text-muted small">SRM</div>
+                                    <div class="fw-bold">{{ lote.srm }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vencimiento -->
+                        <div class="alert alert-{% set dias_rest = (lote.fecha_vencimiento - lote.fecha_elaboracion).days %}{% if dias_rest < 30 %}danger{% else %}info{% endif %} py-2 mb-3">
+                            <small>
+                                <i class="fas fa-calendar-times me-1"></i>
+                                <strong>Vence:</strong> {{ lote.fecha_vencimiento.strftime('%d/%m/%Y') }}
+                            </small>
+                        </div>
+
+                        <!-- Botón Ver Detalles -->
+                        <a href="{{ url_for('ver_lote', lote_id=lote.id) }}" 
+                           class="btn w-100" 
+                           style="background: #8B4513; color: white;">
+                            <i class="fas fa-eye me-2"></i>Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Sin Lotes -->
+        <div class="text-center py-5">
+            <i class="fas fa-box-open" style="font-size: 5rem; color: #ccc;"></i>
+            <h4 class="mt-4 mb-3" style="color: #666;">No tienes lotes registrados</h4>
+            <p class="text-muted mb-4">Comienza creando tu primer lote de CHOCOBREW</p>
+            <a href="{{ url_for('analisis') }}" class="btn btn-lg" style="background: #8B4513; color: white;">
+                <i class="fas fa-plus me-2"></i>Crear Primer Lote
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- JavaScript para funcionalidad extra si es necesario -->
+{% endblock %}

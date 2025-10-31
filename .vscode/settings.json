@@ -1,5 +1,21 @@
 {
+    // Desactivar validación CSS en archivos HTML con Jinja2
     "python-envs.defaultEnvManager": "ms-python.python:system",
     "python-envs.pythonProjects": [],
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "css.validate": false,
+    "html.validate.styles": false,
+    
+    // Asociar archivos .html con Jinja2
+    "files.associations": {
+        "*.html": "jinja-html"
+    },
+    
+    // Opcional: Desactivar otras validaciones molestas
+    "html.validate.scripts": false,
+    
+    // Mejor experiencia con Flask/Jinja2
+    "emmet.includeLanguages": {
+        "jinja-html": "html"
+    }
 }

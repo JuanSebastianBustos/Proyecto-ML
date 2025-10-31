@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Inicio - Beer Hazy Predictor{% endblock %}
+{% block title %}Inicio - CHOCOBREW{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -8,24 +8,24 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-7 hero-content">
-                <h1 class="hero-title" data-aos="fade-right">Hazy IPA Predictor</h1>
+                <h1 class="hero-title" data-aos="fade-right">CHOCOBREW</h1>
                 <p class="hero-subtitle" data-aos="fade-right" data-aos-delay="100">
-                    Predice la aceptación de tu cerveza artesanal con Machine Learning
+                    Cerveza Artesanal de Cacao Ecuatoriano
                 </p>
                 <p class="text-white mb-4" style="font-size: 1.1rem;" data-aos="fade-right" data-aos-delay="200">
-                    Sistema inteligente que analiza características organolépticas y físicas para predecir el nivel de aceptación de cervezas estilo Hazy IPA.
+                    Sistema de análisis y gestión de calidad para cerveza artesanal con cacao fino de aroma. Genera códigos QR con información nutricional y predicción de calidad.
                 </p>
                 <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
-                    <a href="{{ url_for('prediccion') }}" class="btn btn-beer">
-                        <i class="fas fa-flask me-2"></i>Probar Predictor
+                    <a href="{{ url_for('analisis') }}" class="btn btn-beer">
+                        <i class="fas fa-qrcode me-2"></i>Analizar Lote
                     </a>
                     <a href="{{ url_for('proyecto') }}" class="btn btn-beer-outline">
-                        <i class="fas fa-info-circle me-2"></i>Conocer Más
+                        <i class="fas fa-info-circle me-2"></i>Sobre CHOCOBREW
                     </a>
                 </div>
             </div>
             <div class="col-lg-5 text-center mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="400">
-                <i class="fas fa-beer" style="font-size: 15rem; color: var(--beer-amber); opacity: 0.3;"></i>
+                <i class="fas fa-mug-hot" style="font-size: 15rem; color: var(--beer-amber); opacity: 0.3;"></i>
             </div>
         </div>
     </div>
@@ -37,14 +37,14 @@
         <div class="row">
             <div class="col-md-3 col-6 mb-4">
                 <div class="stat-item">
-                    <div class="stat-number">{{ project.metricas.r2 * 100 }}%</div>
-                    <div class="stat-label">Precisión R²</div>
+                    <div class="stat-number">120</div>
+                    <div class="stat-label">Días Vida Útil</div>
                 </div>
             </div>
             <div class="col-md-3 col-6 mb-4">
                 <div class="stat-item">
-                    <div class="stat-number">{{ project.metricas.mae }}</div>
-                    <div class="stat-label">Error MAE</div>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Artesanal</div>
                 </div>
             </div>
             <div class="col-md-3 col-6 mb-4">
@@ -55,8 +55,8 @@
             </div>
             <div class="col-md-3 col-6 mb-4">
                 <div class="stat-item">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">Investigadores</div>
+                    <div class="stat-number">🇪🇨</div>
+                    <div class="stat-label">Cacao Ecuatoriano</div>
                 </div>
             </div>
         </div>
@@ -68,33 +68,33 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="display-5 fw-bold mb-3" style="color: var(--beer-dark);">
-                ¿Cómo Funciona?
+                ¿Qué hace CHOCOBREW?
             </h2>
-            <p class="lead text-muted">Nuestro modelo analiza múltiples características de tu cerveza</p>
+            <p class="lead text-muted">Sistema integral de análisis para cerveza artesanal de cacao</p>
         </div>
         
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card-beer h-100 p-4 text-center">
-                    <i class="fas fa-percentage" style="font-size: 3rem; color: var(--beer-amber);"></i>
-                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Análisis Químico</h4>
-                    <p class="text-muted">ABV, IBU, densidades inicial y final, SRM - todos los parámetros técnicos</p>
+                    <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--beer-amber);"></i>
+                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Código QR</h4>
+                    <p class="text-muted">Genera códigos QR únicos por lote con toda la información del producto para etiquetar</p>
                 </div>
             </div>
             
             <div class="col-md-4">
                 <div class="card-beer h-100 p-4 text-center">
-                    <i class="fas fa-brain" style="font-size: 3rem; color: var(--beer-amber);"></i>
-                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Machine Learning</h4>
-                    <p class="text-muted">Algoritmos de regresión entrenados con cientos de cervezas Hazy</p>
+                    <i class="fas fa-apple-alt" style="font-size: 3rem; color: #28a745;"></i>
+                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Tabla Nutricional</h4>
+                    <p class="text-muted">Calcula automáticamente los valores nutricionales por 100ml según la receta</p>
                 </div>
             </div>
             
             <div class="col-md-4">
                 <div class="card-beer h-100 p-4 text-center">
-                    <i class="fas fa-star" style="font-size: 3rem; color: var(--beer-amber);"></i>
-                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Predicción</h4>
-                    <p class="text-muted">Obtén una calificación de 0-5 estrellas con nivel de confianza</p>
+                    <i class="fas fa-calendar-times" style="font-size: 3rem; color: #dc3545;"></i>
+                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Fecha de Vencimiento</h4>
+                    <p class="text-muted">Calcula la fecha de vencimiento (120 días) desde la elaboración automáticamente</p>
                 </div>
             </div>
         </div>
@@ -106,12 +106,42 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="display-5 fw-bold mb-3" style="color: var(--beer-dark);">
-                Características Evaluadas
+                Variables del Análisis
             </h2>
-            <p class="lead text-muted">Parámetros clave para la predicción</p>
+            <p class="lead text-muted">Características que se evalúan en cada lote</p>
         </div>
         
         <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beer p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-warning bg-opacity-25 p-3 me-3">
+                            <i class="fas fa-percentage" style="font-size: 1.5rem; color: var(--beer-amber);"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0" style="font-weight: 700;">ABV</h5>
+                            <small class="text-muted">Alcohol</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Porcentaje de alcohol que define el cuerpo</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card-beer p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-success bg-opacity-25 p-3 me-3">
+                            <i class="fas fa-seedling" style="font-size: 1.5rem; color: #8B4513;"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0" style="font-weight: 700;">Cacao</h5>
+                            <small class="text-muted">Fino de Aroma</small>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">Porcentaje de cacao ecuatoriano en la receta</p>
+                </div>
+            </div>
+            
             <div class="col-lg-3 col-md-6">
                 <div class="card-beer p-4">
                     <div class="d-flex align-items-center mb-3">
@@ -123,7 +153,7 @@
                             <small class="text-muted">Color</small>
                         </div>
                     </div>
-                    <p class="text-muted mb-0">Medida estándar del color de la cerveza</p>
+                    <p class="text-muted mb-0">Medida estándar del color marrón-cacao</p>
                 </div>
             </div>
             
@@ -131,14 +161,73 @@
                 <div class="card-beer p-4">
                     <div class="d-flex align-items-center mb-3">
                         <div class="rounded-circle bg-danger bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-nose" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <i class="fas fa-clock" style="font-size: 1.5rem; color: #ef4444;"></i>
                         </div>
                         <div>
-                            <h5 class="mb-0" style="font-weight: 700;">Aroma</h5>
-                            <small class="text-muted">Perfil Olfativo</small>
+                            <h5 class="mb-0" style="font-weight: 700;">Proceso</h5>
+                            <small class="text-muted">Fermentación</small>
                         </div>
                     </div>
-                    <p class="text-muted mb-0">Intensidad y calidad del aroma característico</p>
+                    <p class="text-muted mb-0">Días de fermentación y maduración</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sobre CHOCOBREW -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="display-6 fw-bold mb-4" style="color: var(--beer-dark);">
+                    Sobre CHOCOBREW
+                </h2>
+                <p class="lead mb-4">Emprendimiento de cerveza artesanal con cacao fino de aroma ecuatoriano, originario de Loja, Ecuador.</p>
+                <p class="mb-4">Fusionamos la tradición cervecera con uno de los emblemas agrícolas del Ecuador, generando una experiencia sensorial única que combina lo amargo y refrescante de la cerveza con las notas aromáticas del cacao.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2" style="font-size: 1.5rem;"></i>
+                        <span><strong>Producto Premium</strong></span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-leaf text-success me-2" style="font-size: 1.5rem;"></i>
+                        <span><strong>100% Natural</strong></span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-heart text-danger me-2" style="font-size: 1.5rem;"></i>
+                        <span><strong>Hecho en Ecuador</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-beer p-4">
+                    <h4 class="fw-bold mb-3" style="color: var(--beer-dark);">
+                        <i class="fas fa-industry me-2" style="color: #8B4513;"></i>
+                        Nuestro Proceso
+                    </h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-seedling text-success me-2"></i>
+                            <strong>Molienda:</strong> Malta de alta calidad + cacao fino de aroma
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-fire text-danger me-2"></i>
+                            <strong>Maceración y Hervido:</strong> 90 minutos para extraer sabores
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-flask text-primary me-2"></i>
+                            <strong>Fermentación:</strong> 7 días típicos
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-hourglass-half text-info me-2"></i>
+                            <strong>Maduración:</strong> 10-15 días para perfeccionar sabor
+                        </li>
+                        <li class="mb-0">
+                            <i class="fas fa-wine-bottle text-warning me-2"></i>
+                            <strong>Envasado:</strong> Con código QR único por lote
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -146,43 +235,13 @@
 </section>
 
 <!-- CTA Section -->
-<section class="py-5" style="background: linear-gradient(135deg, var(--beer-amber) 0%, var(--beer-gold) 100%);">
+<section class="py-5" style="background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);">
     <div class="container text-center">
-        <h2 class="display-5 fw-bold text-white mb-4">¿Listo para Predecir?</h2>
-        <p class="lead text-white mb-4">Ingresa las características de tu cerveza Hazy y descubre su potencial</p>
-        <a href="{{ url_for('prediccion') }}" class="btn btn-beer-outline btn-lg">
-            <i class="fas fa-flask me-2"></i>Comenzar Predicción
+        <h2 class="display-5 fw-bold text-white mb-4">¿Listo para Analizar tu Lote?</h2>
+        <p class="lead text-white mb-4">Ingresa las características de tu cerveza y genera el código QR para tu producto</p>
+        <a href="{{ url_for('analisis') }}" class="btn btn-beer-outline btn-lg">
+            <i class="fas fa-qrcode me-2"></i>Comenzar Análisis
         </a>
     </div>
 </section>
-{% endblock %}beer p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-warning bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-wine-bottle" style="font-size: 1.5rem; color: var(--beer-amber);"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0" style="font-weight: 700;">ABV</h5>
-                            <small class="text-muted">Alcohol por Volumen</small>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-0">Porcentaje de alcohol que influye en el cuerpo y sabor</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6">
-                <div class="card-beer p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-success bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-leaf" style="font-size: 1.5rem; color: #10b981;"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0" style="font-weight: 700;">IBU</h5>
-                            <small class="text-muted">Amargor</small>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-0">Unidades de amargor que definen el perfil lupulado</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6">
-                <div class="card-
+{% endblock %}
