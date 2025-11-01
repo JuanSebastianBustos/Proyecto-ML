@@ -1,247 +1,958 @@
-{% extends "base.html" %}
-
-{% block title %}Inicio - CHOCOBREW{% endblock %}
-
-{% block content %}
-<!-- Hero Section -->
-<section class="hero-beer">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-7 hero-content">
-                <h1 class="hero-title" data-aos="fade-right">CHOCOBREW</h1>
-                <p class="hero-subtitle" data-aos="fade-right" data-aos-delay="100">
-                    Cerveza Artesanal de Cacao Ecuatoriano
-                </p>
-                <p class="text-white mb-4" style="font-size: 1.1rem;" data-aos="fade-right" data-aos-delay="200">
-                    Sistema de análisis y gestión de calidad para cerveza artesanal con cacao fino de aroma. Genera códigos QR con información nutricional y predicción de calidad.
-                </p>
-                <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="300">
-                    <a href="{{ url_for('analisis') }}" class="btn btn-beer">
-                        <i class="fas fa-qrcode me-2"></i>Analizar Lote
-                    </a>
-                    <a href="{{ url_for('proyecto') }}" class="btn btn-beer-outline">
-                        <i class="fas fa-info-circle me-2"></i>Sobre CHOCOBREW
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-5 text-center mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="400">
-                <i class="fas fa-mug-hot" style="font-size: 15rem; color: var(--beer-amber); opacity: 0.3;"></i>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Stats Section -->
-<section class="stats-beer">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 col-6 mb-4">
-                <div class="stat-item">
-                    <div class="stat-number">120</div>
-                    <div class="stat-label">Días Vida Útil</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <div class="stat-item">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Artesanal</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <div class="stat-item">
-                    <div class="stat-number">2</div>
-                    <div class="stat-label">Universidades</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-4">
-                <div class="stat-item">
-                    <div class="stat-number">🇪🇨</div>
-                    <div class="stat-label">Cacao Ecuatoriano</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Características Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: var(--beer-dark);">
-                ¿Qué hace CHOCOBREW?
-            </h2>
-            <p class="lead text-muted">Sistema integral de análisis para cerveza artesanal de cacao</p>
-        </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHOCOBREW - Cerveza Artesanal con Cacao</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card-beer h-100 p-4 text-center">
-                    <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--beer-amber);"></i>
-                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Código QR</h4>
-                    <p class="text-muted">Genera códigos QR únicos por lote con toda la información del producto para etiquetar</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card-beer h-100 p-4 text-center">
-                    <i class="fas fa-apple-alt" style="font-size: 3rem; color: #28a745;"></i>
-                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Tabla Nutricional</h4>
-                    <p class="text-muted">Calcula automáticamente los valores nutricionales por 100ml según la receta</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card-beer h-100 p-4 text-center">
-                    <i class="fas fa-calendar-times" style="font-size: 3rem; color: #dc3545;"></i>
-                    <h4 class="mt-3 mb-3" style="color: var(--beer-dark); font-weight: 700;">Fecha de Vencimiento</h4>
-                    <p class="text-muted">Calcula la fecha de vencimiento (120 días) desde la elaboración automáticamente</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Características Evaluadas -->
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold mb-3" style="color: var(--beer-dark);">
-                Variables del Análisis
-            </h2>
-            <p class="lead text-muted">Características que se evalúan en cada lote</p>
-        </div>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(to bottom, #1a0f08 0%, #3d2817 50%, #D2B48C 100%);
+            color: #f5f5f5;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
         
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="card-beer p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-warning bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-percentage" style="font-size: 1.5rem; color: var(--beer-amber);"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0" style="font-weight: 700;">ABV</h5>
-                            <small class="text-muted">Alcohol</small>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-0">Porcentaje de alcohol que define el cuerpo</p>
-                </div>
-            </div>
+        /* Partículas flotantes de fondo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(210, 180, 140, 0.3);
+            border-radius: 50%;
+            animation: float-particle 15s infinite ease-in-out;
+        }
+        
+        header {
+            background: linear-gradient(135deg, rgba(139,69,19,0.95) 0%, rgba(210,180,140,0.95) 100%);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        header .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6600, #ffaa00, #ff6600);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, logoFloat 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        header .logo:hover {
+            transform: scale(1.1) rotate(-2deg);
+        }
+        
+        header .logo i {
+            margin-right: 10px;
+            animation: spin 4s linear infinite;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+        
+        nav ul li {
+            animation: slideInRight 0.8s ease-out both;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+        
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1em;
+            position: relative;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6600, #ffaa00);
+            transition: width 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        nav ul li a:hover::before {
+            width: 100%;
+        }
+        
+        nav ul li a:hover {
+            color: #ffaa00;
+            transform: translateY(-3px);
+        }
+        
+        .hero {
+            background: 
+                linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                url('https://hosteleriaecuador.com/wp-content/uploads/cerveza-de-cacao.jpg') no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #ffffff;
+            text-align: center;
+            padding: 180px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        .hero h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.8);
+            animation: titleBounce 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+        }
+        
+        .hero p {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+            line-height: 1.8;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #ff6600, #ff8533, #ffaa00);
+            background-size: 200% auto;
+            color: #ffffff;
+            padding: 18px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: inline-block;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(255,102,0,0.4);
+            animation: buttonPulse 2s infinite, fadeInUp 1s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .button:hover {
+            transform: translateY(-8px) scale(1.08);
+            box-shadow: 0 15px 40px rgba(255,102,0,0.6);
+            background-position: right center;
+        }
+        
+        .section {
+            padding: 100px 40px;
+            text-align: center;
+            max-width: 1400px;
+            margin: 40px auto;
+            opacity: 0;
+            transform: translateY(80px);
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,102,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .section h2 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff6600, #ffaa00, #ff6600);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #f0e6d2;
+            line-height: 1.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .highlight {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6600, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255,102,0,0.5);
+            margin: 20px 0;
+            display: block;
+            animation: glow 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .image-container {
+            margin: 40px 0;
+            overflow: hidden;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            transition: all 0.5s ease;
+        }
+        
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            z-index: 2;
+            transition: left 0.6s;
+        }
+        
+        .image-container:hover::before {
+            left: 100%;
+        }
+        
+        .image-container img {
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            border-radius: 20px;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            filter: brightness(0.9) contrast(1.1);
+        }
+        
+        .image-container:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 70px rgba(255,102,0,0.4);
+        }
+        
+        .image-container:hover img {
+            transform: scale(1.15) rotate(2deg);
+            filter: brightness(1.1) contrast(1.2) saturate(1.3);
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .image-grid .image-container {
+            animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+            animation-delay: calc(var(--i) * 0.15s);
+        }
+        
+        .gallery-section {
+            background: linear-gradient(135deg, rgba(139,69,19,0.3), rgba(210,180,140,0.3));
+            padding: 100px 20px;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 50px auto;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: fadeInScale 0.8s ease-out both;
+            animation-delay: calc(var(--i) * 0.1s);
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.2) rotate(3deg);
+        }
+        
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 40px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,102,0,0.3);
+            transition: all 0.4s ease;
+            animation: bounceIn 1s ease-out both;
+            animation-delay: calc(var(--i) * 0.2s);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            border-color: #ff6600;
+            box-shadow: 0 15px 40px rgba(255,102,0,0.4);
+            background: rgba(255,102,0,0.2);
+        }
+        
+        .stat-card i {
+            font-size: 3em;
+            color: #ff6600;
+            margin-bottom: 20px;
+            animation: iconBounce 2s infinite;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.5em;
+            color: #ffaa00;
+            margin: 10px 0;
+            font-family: 'Cinzel', serif;
+        }
+        
+        .stat-card p {
+            font-size: 1.1em;
+            color: #f0e6d2;
+        }
+        
+        .process-section {
+            background: linear-gradient(135deg, rgba(139,69,19,0.4), rgba(210,180,140,0.4));
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step {
+            position: relative;
+            padding: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            border: 2px solid rgba(255,102,0,0.3);
+            transition: all 0.5s ease;
+            animation: slideInBottom 1s ease-out both;
+            animation-delay: calc(var(--i) * 0.2s);
+        }
+        
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6600, #ffaa00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(255,102,0,0.5);
+        }
+        
+        .step:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #ff6600;
+            box-shadow: 0 15px 40px rgba(255,102,0,0.4);
+        }
+        
+        .step i {
+            font-size: 3em;
+            color: #ff6600;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, rgba(26,15,8,0.95), rgba(61,40,23,0.95));
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            text-align: center;
+            padding: 60px 40px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .social-links a {
+            color: #ffffff;
+            font-size: 2em;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out both;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+        
+        .social-links a:hover {
+            color: #ff6600;
+            transform: translateY(-10px) scale(1.3) rotate(360deg);
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: white;
+            box-shadow: 0 8px 30px rgba(37,211,102,0.5);
+            z-index: 1000;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.2);
+            box-shadow: 0 12px 40px rgba(37,211,102,0.7);
+        }
+        
+        /* Animaciones */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes titleBounce {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(2deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,102,0,0.5); }
+            50% { text-shadow: 0 0 40px rgba(255,102,0,0.8), 0 0 60px rgba(255,102,0,0.6); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes float-particle {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { 
+                transform: translateY(-100vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeInScale {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes slideInBottom {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px 20px;
+            }
             
-            <div class="col-lg-3 col-md-6">
-                <div class="card-beer p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-success bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-seedling" style="font-size: 1.5rem; color: #8B4513;"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0" style="font-weight: 700;">Cacao</h5>
-                            <small class="text-muted">Fino de Aroma</small>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-0">Porcentaje de cacao ecuatoriano en la receta</p>
-                </div>
-            </div>
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 15px;
+            }
             
-            <div class="col-lg-3 col-md-6">
-                <div class="card-beer p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-info bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-palette" style="font-size: 1.5rem; color: #06b6d4;"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0" style="font-weight: 700;">SRM</h5>
-                            <small class="text-muted">Color</small>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-0">Medida estándar del color marrón-cacao</p>
-                </div>
-            </div>
+            .hero h1 {
+                font-size: 2.5em;
+            }
             
-            <div class="col-lg-3 col-md-6">
-                <div class="card-beer p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="rounded-circle bg-danger bg-opacity-25 p-3 me-3">
-                            <i class="fas fa-clock" style="font-size: 1.5rem; color: #ef4444;"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0" style="font-weight: 700;">Proceso</h5>
-                            <small class="text-muted">Fermentación</small>
-                        </div>
-                    </div>
-                    <p class="text-muted mb-0">Días de fermentación y maduración</p>
+            .section h2 {
+                font-size: 2.5em;
+            }
+            
+            .image-grid, .gallery-grid, .stats-section, .process-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .button {
+                padding: 15px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Partículas flotantes -->
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <div class="logo"><i class="fas fa-beer"></i> CHOCOBREW</div>
+        <nav>
+            <ul>
+                <li style="--i:1"><a href="#inicio">Inicio</a></li>
+                <li style="--i:2"><a href="#proyecto-ml">Proyecto ML</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="inicio" class="hero">
+        <h1>CHOCOBREW</h1>
+        <p>Donde el cacao se convierte en cerveza. Descubre nuestra cerveza hazy infusionada con cacao, una creación artesanal que combina la turbidez cremosa de una IPA con notas ricas de chocolate.</p>
+        <a href="#productos" class="button">Descubre el Sabor</a>
+    </section>
+
+    <section id="historia" class="section">
+        <h2><i class="fas fa-book-open"></i> Nuestra Historia</h2>
+        <p>CHOCOBREW nació de mi pasión por la cerveza artesanal y las ganas de crear algo diferente. Siempre me ha gustado descubrir nuevos sabores, y al conocer el potencial del cacao fino de aroma que se cultiva en nuestra región, supe que podía ser el ingrediente perfecto.</p>
+        <div class="image-container">
+            <img src="https://i.ibb.co/prGLcYCc/logo1cerveza.jpg" alt="Elaboración artesanal">
+        </div>
+        <p>Su aroma y sabor encajan de forma única con el perfil de una buena cerveza. Además, es un producto que representa el trabajo de muchos pequeños agricultores, y usarlo en CHOCOBREW es una forma de dar valor a ese esfuerzo.</p>
+        <div class="image-grid">
+            <div class="image-container" style="--i:1">
+                <img src="https://cervezapediamedia.files.wordpress.com/2020/04/cerveza-y-el-mejor-postre...-chocolate.jpg" alt="Cacao colombiano">
+            </div>
+            <div class="image-container" style="--i:2">
+                <img src="https://www.guiadelacerveza.com/wp-content/uploads/2023/11/Maridaje-de-cervezaa-y-chocolate.jpg" alt="Granos de cacao">
+            </div>
+        </div>
+    </section>
+
+    <section id="stats" class="section">
+        <h2><i class="fas fa-chart-line"></i> CHOCOBREW en Números</h2>
+        <div class="stats-section">
+            <div class="stat-card" style="--i:1">
+                <i class="fas fa-beer"></i>
+                <h3>100%</h3>
+                <p>Artesanal</p>
+            </div>
+            <div class="stat-card" style="--i:2">
+                <i class="fas fa-leaf"></i>
+                <h3>Natural</h3>
+                <p>Ingredientes</p>
+            </div>
+            <div class="stat-card" style="--i:3">
+                <i class="fas fa-award"></i>
+                <h3>Premium</h3>
+                <p>Calidad</p>
+            </div>
+            <div class="stat-card" style="--i:4">
+                <i class="fas fa-heart"></i>
+                <h3>Pasión</h3>
+                <p>Colombiana</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="productos" class="section">
+        <h2><i class="fas fa-star"></i> Nuestro Producto Estrella</h2>
+        <p class="highlight">CERVEZA HAZY CON INFUSIÓN DE CACAO PREMIUM</p>
+        <p class="highlight">INGREDIENTES 100% NATURALES</p>
+        <p class="highlight">PROCESO ARTESANAL TRADICIONAL</p>
+        <p>Nuestra Hazy de Cacao es una IPA turbia con notas de chocolate amargo, vainilla y frutas tropicales. El cacao añade profundidad, creando un equilibrio perfecto entre dulzor y amargor.</p>
+        <div class="image-grid">
+            <div class="image-container" style="--i:1">
+                <img src="https://hosteleriaecuador.com/wp-content/uploads/cerveza-de-cacao.jpg" alt="Cerveza de cacao">
+            </div>
+            <div class="image-container" style="--i:2">
+                <img src="https://static.nationalgeographicla.com/files/styles/image_3200/public/gettyimages-480900337.jpg" alt="Vasos de cerveza artesanal">
+            </div>
+            <div class="image-container" style="--i:3">
+                <img src="https://cdn.shopify.com/s/files/1/0339/9513/files/hazy-ipa_grande.jpg" alt="Cerveza oscura artesanal">
+            </div>
+        </div>
+        <a href="#beneficios" class="button">Conoce los Beneficios</a>
+    </section>
+
+    <section id="proceso" class="section process-section">
+        <h2><i class="fas fa-cogs"></i> Nuestro Proceso Artesanal</h2>
+        <p>Cada botella de CHOCOBREW es el resultado de un cuidadoso proceso que combina tradición cervecera con innovación en sabores.</p>
+        <div class="process-steps">
+            <div class="step" data-step="1" style="--i:1">
+                <i class="fas fa-seedling"></i>
+                <h3>Selección</h3>
+                <p>Seleccionamos el mejor cacao ecuatoriano de aroma fino, trabajando directamente con agricultores locales.</p>
+            </div>
+            <div class="step" data-step="2" style="--i:2">
+                <i class="fas fa-mortar-pestle"></i>
+                <h3>Preparación</h3>
+                <p>Tostamos y procesamos el cacao para extraer sus mejores cualidades aromáticas y de sabor.</p>
+            </div>
+            <div class="step" data-step="3" style="--i:3">
+                <i class="fas fa-flask"></i>
+                <h3>Infusión</h3>
+                <p>Infusionamos el cacao durante la elaboración de nuestra cerveza hazy, creando una fusión perfecta.</p>
+            </div>
+            <div class="step" data-step="4" style="--i:4">
+                <i class="fas fa-beer"></i>
+                <h3>Fermentación</h3>
+                <p>Fermentamos con levaduras seleccionadas que realzan los sabores del cacao y los lúpulos.</p>
+            </div>
+        </div>
+        <div class="image-container" style="margin-top: 50px;">
+            <img src="https://ambar.com/wp-content/uploads/2018/09/mosaico-produccion-cerveza-copia.jpg" alt="Proceso de elaboración de cerveza">
+        </div>
+    </section>
+
+    <section id="galeria" class="gallery-section">
+        <div class="section">
+            <h2><i class="fas fa-images"></i> Galería CHOCOBREW</h2>
+            <p>Explora el mundo visual de nuestra cerveza artesanal con cacao</p>
+            <div class="gallery-grid">
+                <div class="gallery-item" style="--i:1">
+                    <img src="https://chocolatestorras.com/wp-content/uploads/2023/10/fruto-del-cacao-2-scaled.jpg" alt="Mazorcas de cacao">
+                </div>
+                <div class="gallery-item" style="--i:2">
+                    <img src="https://hosteleriaecuador.com/wp-content/uploads/cerveza-de-cacao.jpg" alt="Cerveza de cacao">
+                </div>
+                <div class="gallery-item" style="--i:3">
+                    <img src="https://topbeer.mx/wp-content/uploads/2022/08/tipos-de-cerveza-en-beer-flight.jpg" alt="Cervezas artesanales">
+                </div>
+                <div class="gallery-item" style="--i:4">
+                    <img src="https://www.camae.org/wp-content/uploads/2022/09/a2.jpg" alt="Granos de cacao">
+                </div>
+                <div class="gallery-item" style="--i:5">
+                    <img src="https://ep01.epimg.net/verne/imagenes/2017/03/17/articulo/1489732745_249606_1489733466_noticia_normal.jpg" alt="Cerveza oscura">
+                </div>
+                <div class="gallery-item" style="--i:6">
+                    <img src="https://www.larepublica.ec/wp-content/uploads/2023/07/Chocolate-612x381.jpg" alt="Chocolate y cacao">
+                </div>
+                <div class="gallery-item" style="--i:7">
+                    <img src="https://www.sefiltra.com/wp-content/uploads/2020/10/produccion-de-cerveza.jpg" alt="Elaboración cerveza">
+                </div>
+                <div class="gallery-item" style="--i:8">
+                    <img src="https://www.agronet.gov.co/Noticias/PublishingImages/AgenciaUNAL-060224-01.jpg" alt="Cacao natural">
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Sobre CHOCOBREW -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <h2 class="display-6 fw-bold mb-4" style="color: var(--beer-dark);">
-                    Sobre CHOCOBREW
-                </h2>
-                <p class="lead mb-4">Emprendimiento de cerveza artesanal con cacao fino de aroma ecuatoriano, originario de Loja, Ecuador.</p>
-                <p class="mb-4">Fusionamos la tradición cervecera con uno de los emblemas agrícolas del Ecuador, generando una experiencia sensorial única que combina lo amargo y refrescante de la cerveza con las notas aromáticas del cacao.</p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle text-success me-2" style="font-size: 1.5rem;"></i>
-                        <span><strong>Producto Premium</strong></span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-leaf text-success me-2" style="font-size: 1.5rem;"></i>
-                        <span><strong>100% Natural</strong></span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-heart text-danger me-2" style="font-size: 1.5rem;"></i>
-                        <span><strong>Hecho en Ecuador</strong></span>
-                    </div>
-                </div>
+    <section id="beneficios" class="section">
+        <h2><i class="fas fa-gift"></i> Beneficios de Nuestra Propuesta</h2>
+        <p>CHOCOBREW es más que una cerveza, es una experiencia que combina sabor, tradición y compromiso social</p>
+        <div class="image-container">
+            <img src="https://www.esariri.com/wp-content/uploads/2023/04/4-1.jpg" alt="Experiencia cervecera artesanal">
+        </div>
+        <div class="stats-section" style="margin-top: 50px;">
+            <div class="stat-card" style="--i:1">
+                <i class="fas fa-star"></i>
+                <h3>Sabor Único</h3>
+                <p>Un perfil de sabor auténtico e inigualable que fusiona cerveza artesanal con cacao premium</p>
             </div>
-            <div class="col-lg-6">
-                <div class="card-beer p-4">
-                    <h4 class="fw-bold mb-3" style="color: var(--beer-dark);">
-                        <i class="fas fa-industry me-2" style="color: #8B4513;"></i>
-                        Nuestro Proceso
-                    </h4>
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <i class="fas fa-seedling text-success me-2"></i>
-                            <strong>Molienda:</strong> Malta de alta calidad + cacao fino de aroma
-                        </li>
-                        <li class="mb-3">
-                            <i class="fas fa-fire text-danger me-2"></i>
-                            <strong>Maceración y Hervido:</strong> 90 minutos para extraer sabores
-                        </li>
-                        <li class="mb-3">
-                            <i class="fas fa-flask text-primary me-2"></i>
-                            <strong>Fermentación:</strong> 7 días típicos
-                        </li>
-                        <li class="mb-3">
-                            <i class="fas fa-hourglass-half text-info me-2"></i>
-                            <strong>Maduración:</strong> 10-15 días para perfeccionar sabor
-                        </li>
-                        <li class="mb-0">
-                            <i class="fas fa-wine-bottle text-warning me-2"></i>
-                            <strong>Envasado:</strong> Con código QR único por lote
-                        </li>
-                    </ul>
-                </div>
+            <div class="stat-card" style="--i:2">
+                <i class="fas fa-hands-helping"></i>
+                <h3>Apoyo Local</h3>
+                <p>Respaldamos a pequeños productores de cacao, generando impacto positivo en comunidades rurales</p>
+            </div>
+            <div class="stat-card" style="--i:3">
+                <i class="fas fa-flag"></i>
+                <h3>Identidad Cultural</h3>
+                <p>Celebramos y preservamos la riqueza cultural local a través de ingredientes autóctonos</p>
+            </div>
+            <div class="stat-card" style="--i:4">
+                <i class="fas fa-leaf"></i>
+                <h3>Sostenible</h3>
+                <p>Producción responsable que cuida el medio ambiente y promueve prácticas sostenibles</p>
+            </div>
+            <div class="stat-card" style="--i:5">
+                <i class="fas fa-award"></i>
+                <h3>Producto Gourmet</h3>
+                <p>Cerveza artesanal premium de alta calidad para paladares exigentes</p>
             </div>
         </div>
-    </div>
-</section>
+        <p style="margin-top: 40px; font-size: 1.4em;">Cada botella de CHOCOBREW cuenta una historia de pasión, tradición y excelencia. Únete a nuestra comunidad y vive la experiencia del verdadero sabor artesanal.</p>
+    </section>
 
-<!-- CTA Section -->
-<section class="py-5" style="background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);">
-    <div class="container text-center">
-        <h2 class="display-5 fw-bold text-white mb-4">¿Listo para Analizar tu Lote?</h2>
-        <p class="lead text-white mb-4">Ingresa las características de tu cerveza y genera el código QR para tu producto</p>
-        <a href="{{ url_for('analisis') }}" class="btn btn-beer-outline btn-lg">
-            <i class="fas fa-qrcode me-2"></i>Comenzar Análisis
-        </a>
-    </div>
-</section>
-{% endblock %}
+    <footer>
+        <div class="footer-content">
+            <h3 style="font-family: 'Cinzel', serif; font-size: 2em; margin-bottom: 20px; color: #ff6600;">CHOCOBREW</h3>
+            <p style="font-size: 1.1em; margin-bottom: 30px;">Cerveza artesanal con cacao ecuatoriano premium</p>
+            <div class="social-links">
+                <a href="#" style="--i:1"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="--i:2"><i class="fab fa-instagram"></i></a>
+                <a href="#" style="--i:3"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="--i:4"><i class="fab fa-youtube"></i></a>
+            </div>
+            <p style="margin-top: 30px; opacity: 0.8;">© 2024 CHOCOBREW - Todos los derechos reservados</p>
+            <p style="margin-top: 10px; opacity: 0.7;">Hecho con <i class="fas fa-heart" style="color: #ff6600;"></i> en ecuador</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/593993913964" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Crear partículas flotantes
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Animación de aparición al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Efecto parallax en el hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // Smooth scroll para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efecto de cambio de color en el header al hacer scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'linear-gradient(135deg, rgba(139,69,19,0.98) 0%, rgba(210,180,140,0.98) 100%)';
+                header.style.boxShadow = '0 6px 30px rgba(0,0,0,0.6)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, rgba(139,69,19,0.95) 0%, rgba(210,180,140,0.95) 100%)';
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5)';
+            }
+        });
+    </script>
+</body>
+</html>
