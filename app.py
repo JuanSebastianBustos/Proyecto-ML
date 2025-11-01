@@ -5,31 +5,54 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import numpy as np
-from datetime import timedelta
+from datetime import timedelta, datetime
+import io
+import base64
+import socket
+
+# Función para obtener IP local automáticamente
+def obtener_ip_local():
+    """Obtiene la IP local de la máquina"""
+    try:
+        # Crear un socket temporal para obtener la IP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Conectar a Google DNS (no envía datos)
+        ip_local = s.getsockname()[0]
+        s.close()
+        return ip_local
+    except Exception:
+        return "localhost"
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configuración de base de datos MySQL
+# Importar QR Code
+try:
+    import qrcode
+    QR_AVAILABLE = True
+except ImportError:
+    QR_AVAILABLE = False
+    logger.warning("qrcode no disponible. Instala: pip install qrcode[pil]")
+
+# Configuración MySQL
 try:
     import mysql.connector
     from mysql.connector import Error
     
     DB_CONFIG = {
         'host': 'localhost',
-        'user': 'root',  # Usuario por defecto de XAMPP
-        'password': '',  # Contraseña por defecto de XAMPP (vacía)
+        'user': 'root',
+        'password': '',
         'database': 'beer_predictor_db'
     }
     
     def get_db_connection():
-        """Crear conexión a la base de datos"""
         try:
             connection = mysql.connector.connect(**DB_CONFIG)
             return connection
@@ -41,39 +64,48 @@ try:
 except ImportError:
     logger.warning("MySQL connector no disponible. Instala: pip install mysql-connector-python")
     DB_CONFIG = None
-    
     def get_db_connection():
         return None
 
-# Decorador para rutas protegidas
+# Decorador login
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
-            flash('Debes iniciar sesión para acceder a esta página', 'warning')
+            flash('Debes iniciar sesión para acceder', 'warning')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 
 # Información del proyecto
 PROJECT_INFO = {
-    'nombre': 'Beer Hazy Predictor',
-    'subtitulo': 'Predicción de Popularidad con Machine Learning',
-    'version': '1.0',
-    'descripcion': 'Sistema inteligente de predicción de aceptación de cervezas artesanales estilo Hazy mediante algoritmos de Machine Learning',
-    'objetivo_general': 'Predecir la puntuación de aceptación de cervezas artesanales Hazy basándose en sus características físicas y organolépticas',
+    'nombre': 'CHOCOBREW Predictor',
+    'subtitulo': 'Sistema de Análisis para Cerveza Artesanal de Cacao',
+    'version': '2.0',
+    'descripcion': 'Sistema inteligente de predicción y gestión de calidad para cerveza artesanal con cacao fino de aroma ecuatoriano',
+    'objetivo_general': 'Desarrollar un sistema ML para predecir la calidad de cerveza artesanal de cacao',
     'objetivos_especificos': [
-        'Analizar las características que más influyen en la aceptación de cervezas Hazy',
-        'Implementar modelos de regresión para predicción de puntuaciones',
-        'Crear una interfaz web interactiva para facilitar las predicciones',
-        'Promover la colaboración internacional en investigación cervecera'
+        'Analizar características físico-químicas de cerveza con cacao',
+        'Entrenar modelo predictivo de calidad',
+        'Generar códigos QR con información nutricional',
+        'Facilitar trazabilidad de lotes'
     ],
+    'producto': 'Cerveza Artesanal de Cacao',
+    'emprendimiento': 'CHOCOBREW',
+    'ubicacion': 'Loja, Ecuador',
+    'vida_util_dias': 120,
+    'metricas': {
+        'r2': 0.87,
+        'mae': '0.32',
+        'rmse': '0.45'
+    },
     'tecnologias': [
         {'nombre': 'Python', 'icono': 'fab fa-python'},
         {'nombre': 'Flask', 'icono': 'fas fa-flask'},
         {'nombre': 'Scikit-learn', 'icono': 'fas fa-brain'},
-        {'nombre': 'Pandas', 'icono': 'fas fa-table'},
-        {'nombre': 'Bootstrap', 'icono': 'fab fa-bootstrap'}
+        {'nombre': 'MySQL', 'icono': 'fas fa-database'},
+        {'nombre': 'Bootstrap', 'icono': 'fab fa-bootstrap'},
+        {'nombre': 'QR Code', 'icono': 'fas fa-qrcode'}
     ],
     'universidades': [
         {
@@ -107,68 +139,181 @@ PROJECT_INFO = {
             'pais': 'Colombia',
             'email': 'estudiante2@ucundinamarca.edu.co',
             'iniciales': 'E2'
-        },
-        {
-            'nombre': 'Estudiante Ecuador 1',
-            'rol': 'Científico de Datos',
-            'universidad': 'Universidad de Ecuador',
-            'pais': 'Ecuador',
-            'email': 'estudiante1@uce.edu.ec',
-            'iniciales': 'E3'
-        },
-        {
-            'nombre': 'Estudiante Ecuador 2',
-            'rol': 'Analista de Datos',
-            'universidad': 'Universidad de Ecuador',
-            'pais': 'Ecuador',
-            'email': 'estudiante2@uce.edu.ec',
-            'iniciales': 'E4'
         }
-    ],
-    'metricas': {
-        'r2': 0.87,
-        'mae': 0.23,
-        'rmse': 0.31
-    }
+    ]
 }
 
-# Cargar modelo (crear modelo dummy si no existe)
+# Cargar modelo
 model = None
 scaler = None
-
 try:
     import joblib
     model = joblib.load('model/beer_model.pkl')
     scaler = joblib.load('model/scaler.pkl')
     logger.info("Modelo cargado exitosamente")
-except ImportError:
-    logger.warning("joblib no disponible")
-except FileNotFoundError:
-    logger.warning("Modelo no encontrado, usando predicción simulada")
+except Exception as e:
+    logger.warning(f"Modelo no encontrado: {e}. Usando predicción simulada")
+    
+# =====================================================
+# FUNCIONES AUXILIARES
+# =====================================================
 
-# Manejadores de errores
+def calcular_tabla_nutricional(abv, porcentaje_cacao, og):
+    """Calcula valores nutricionales aproximados por 100ml"""
+    calorias = (og - 1) * 1000 * 4 + (abv * 7)
+    carbohidratos = (og - 1) * 1000 * 0.8
+    proteinas = 0.3 + (porcentaje_cacao * 0.1)
+    grasas = porcentaje_cacao * 0.15
+    azucares = carbohidratos * 0.6
+    
+    return {
+        'calorias': round(calorias),
+        'carbohidratos': round(carbohidratos, 1),
+        'proteinas': round(proteinas, 1),
+        'grasas': round(grasas, 1),
+        'azucares': round(azucares, 1),
+        'alcohol': round(abv, 1)
+    }
+
+def generar_codigo_qr(lote_id):
+    """
+    Genera código QR con URL accesible desde red local
+    """
+    if not QR_AVAILABLE:
+        return None
+    
+    # Obtener IP automáticamente
+    ip_local = obtener_ip_local()
+    
+    # Usar IP local en lugar de localhost
+    url_lote = f"http://{ip_local}:5000/lote-publico/{lote_id}"
+    
+    logger.info(f"Generando QR con URL: {url_lote}")
+    
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4
+    )
+    qr.add_data(url_lote)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    img_base64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    return img_base64
+
+def guardar_lote_en_bd(datos_lote, user_id):
+    """Guarda el lote completo en MySQL"""
+    connection = get_db_connection()
+    if not connection:
+        logger.warning("No se pudo conectar a la base de datos")
+        return None  # ← CAMBIO: Retornar None en lugar de False
+    
+    try:
+        cursor = connection.cursor()
+        
+        query = """
+        INSERT INTO lotes_chocobrew (
+            user_id, codigo_lote, fecha_elaboracion, fecha_vencimiento,
+            abv, ibu, srm, og, fg, porcentaje_cacao,
+            dias_fermentacion, dias_maduracion, puntuacion, categoria,
+            calorias, carbohidratos, proteinas, grasas, azucares,
+            qr_code_base64
+        ) VALUES (
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        )
+        """
+        
+        valores = (
+            int(user_id),
+            str(datos_lote['codigo_lote']),
+            str(datos_lote['fecha_elaboracion']),
+            str(datos_lote['fecha_vencimiento']),
+            float(datos_lote['abv']),
+            int(datos_lote['ibu']),
+            int(datos_lote['srm']),
+            float(datos_lote['og']),
+            float(datos_lote['fg']),
+            float(datos_lote['porcentaje_cacao']),
+            int(datos_lote['dias_fermentacion']),
+            int(datos_lote['dias_maduracion']),
+            float(datos_lote['puntuacion']),
+            str(datos_lote['categoria']),
+            int(datos_lote['nutricional']['calorias']),
+            float(datos_lote['nutricional']['carbohidratos']),
+            float(datos_lote['nutricional']['proteinas']),
+            float(datos_lote['nutricional']['grasas']),
+            float(datos_lote['nutricional']['azucares']),
+            datos_lote.get('qr_code')
+        )
+        
+        cursor.execute(query, valores)
+        connection.commit()
+        
+        lote_id = cursor.lastrowid  # ← IMPORTANTE: Obtener el ID insertado
+        logger.info(f"Lote guardado en BD con ID: {lote_id}")
+        
+        return lote_id  # ← CAMBIO: Retornar el ID
+        
+    except Error as e:
+        logger.error(f"Error guardando lote en BD: {e}")
+        connection.rollback()
+        return None  # ← CAMBIO: Retornar None
+    finally:
+        cursor.close()
+        connection.close()
+
+def actualizar_ultimo_acceso(user_id):
+    """Actualiza la fecha de último acceso del usuario"""
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = %s",
+                (user_id,)
+            )
+            connection.commit()
+        except Error as e:
+            logger.error(f"Error actualizando último acceso: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+
+# =====================================================
+# MANEJADORES DE ERRORES
+# =====================================================
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('error.html', 
                          error_title="Página no encontrada",
                          error_message="La página que buscas no existe.",
-                         error_code=404), 404
+                         error_code=404,
+                         project=PROJECT_INFO), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     logger.error(f'Server Error: {error}')
     return render_template('error.html',
-                         error_title="Error interno del servidor",
-                         error_message="Ha ocurrido un error inesperado.",
-                         error_code=500), 500
+                         error_title="Error interno",
+                         error_message="Error inesperado.",
+                         error_code=500,
+                         project=PROJECT_INFO), 500
 
-# ==============================================
+# =====================================================
 # RUTAS DE AUTENTICACIÓN
-# ==============================================
+# =====================================================
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Página de inicio de sesión"""
     if 'user_id' in session:
         return redirect(url_for('index'))
     
@@ -178,7 +323,7 @@ def login():
         remember = request.form.get('remember', False)
         
         if not email or not password:
-            flash('Por favor completa todos los campos', 'danger')
+            flash('Completa todos los campos', 'danger')
             return render_template('login.html', project=PROJECT_INFO)
         
         connection = get_db_connection()
@@ -196,12 +341,14 @@ def login():
                     if remember:
                         session.permanent = True
                     
+                    actualizar_ultimo_acceso(user['id'])
+                    
                     flash(f'¡Bienvenido {user["nombre"]}!', 'success')
                     return redirect(url_for('index'))
                 else:
                     flash('Correo o contraseña incorrectos', 'danger')
             except Error as e:
-                logger.error(f"Error en login: {e}")
+                logger.error(f"Error login: {e}")
                 flash('Error al iniciar sesión', 'danger')
             finally:
                 cursor.close()
@@ -213,7 +360,6 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Página de registro de usuarios"""
     if 'user_id' in session:
         return redirect(url_for('index'))
     
@@ -223,9 +369,8 @@ def register():
         password = request.form.get('password', '')
         confirm_password = request.form.get('confirm_password', '')
         
-        # Validaciones
         if not all([nombre, email, password, confirm_password]):
-            flash('Por favor completa todos los campos', 'danger')
+            flash('Completa todos los campos', 'danger')
             return render_template('register.html', project=PROJECT_INFO)
         
         if password != confirm_password:
@@ -233,31 +378,26 @@ def register():
             return render_template('register.html', project=PROJECT_INFO)
         
         if len(password) < 6:
-            flash('La contraseña debe tener al menos 6 caracteres', 'danger')
+            flash('La contraseña debe tener mínimo 6 caracteres', 'danger')
             return render_template('register.html', project=PROJECT_INFO)
         
         connection = get_db_connection()
         if connection:
             try:
                 cursor = connection.cursor()
-                
-                # Verificar si el email ya existe
                 cursor.execute("SELECT id FROM usuarios WHERE email = %s", (email,))
                 if cursor.fetchone():
                     flash('Este correo ya está registrado', 'warning')
                     return render_template('register.html', project=PROJECT_INFO)
                 
-                # Crear usuario
                 hashed_password = generate_password_hash(password)
                 cursor.execute(
                     "INSERT INTO usuarios (nombre, email, password) VALUES (%s, %s, %s)",
                     (nombre, email, hashed_password)
                 )
                 connection.commit()
-                
-                flash('¡Registro exitoso! Ya puedes iniciar sesión', 'success')
+                flash('¡Registro exitoso! Ahora puedes iniciar sesión', 'success')
                 return redirect(url_for('login'))
-                
             except Error as e:
                 logger.error(f"Error en registro: {e}")
                 flash('Error al registrar usuario', 'danger')
@@ -271,14 +411,14 @@ def register():
 
 @app.route('/logout')
 def logout():
-    """Cerrar sesión"""
+    nombre = session.get('user_name', 'Usuario')
     session.clear()
-    flash('Sesión cerrada exitosamente', 'info')
+    flash(f'Hasta pronto {nombre}!', 'info')
     return redirect(url_for('login'))
 
-# ==============================================
+# =====================================================
 # RUTAS PÚBLICAS
-# ==============================================
+# =====================================================
 
 @app.route('/')
 def index():
@@ -292,88 +432,364 @@ def proyecto():
 def equipo():
     return render_template('team.html', project=PROJECT_INFO)
 
-# ==============================================
-# RUTAS PROTEGIDAS (requieren login)
-# ==============================================
+# =====================================================
+# 🆕 RUTA PÚBLICA - VISTA DE LOTE (PARA QR)
+# =====================================================
 
-@app.route('/prediccion')
-@login_required
-def prediccion():
-    return render_template('predict.html', project=PROJECT_INFO)
+@app.route('/lote-publico/<int:lote_id>')
+def lote_publico(lote_id):
+    """
+    Página pública para ver información del lote al escanear QR
+    NO REQUIERE LOGIN - Cualquiera puede verla
+    """
+    connection = get_db_connection()
+    
+    if not connection:
+        return render_template('error.html',
+                             error_title="Error de conexión",
+                             error_message="No se pudo conectar a la base de datos",
+                             error_code=500,
+                             project=PROJECT_INFO), 500
+    
+    try:
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT * FROM lotes_chocobrew 
+            WHERE id = %s
+        """, (lote_id,))
+        lote = cursor.fetchone()
+        
+        if not lote:
+            return render_template('error.html',
+                                 error_title="Lote no encontrado",
+                                 error_message="Este código QR no es válido o el lote no existe",
+                                 error_code=404,
+                                 project=PROJECT_INFO), 404
+        
+        # Convertir Decimals a float
+        datos_lote = {
+            'id': lote['id'],
+            'codigo_lote': lote['codigo_lote'],
+            'fecha_elaboracion': lote['fecha_elaboracion'].strftime('%d/%m/%Y'),
+            'fecha_vencimiento': lote['fecha_vencimiento'].strftime('%d/%m/%Y'),
+            'abv': float(lote['abv']),
+            'ibu': lote['ibu'],
+            'srm': lote['srm'],
+            'porcentaje_cacao': float(lote['porcentaje_cacao']),
+            'puntuacion': float(lote['puntuacion']),
+            'categoria': lote['categoria'],
+            'nutricional': {
+                'calorias': lote['calorias'],
+                'carbohidratos': float(lote['carbohidratos']),
+                'proteinas': float(lote['proteinas']),
+                'grasas': float(lote['grasas']),
+                'azucares': float(lote['azucares']),
+                'alcohol': float(lote['abv'])
+            }
+        }
+        
+        return render_template('lote_publico.html', 
+                             lote=datos_lote,
+                             project=PROJECT_INFO)
+        
+    except Error as e:
+        logger.error(f"Error obteniendo lote público: {e}")
+        return render_template('error.html',
+                             error_title="Error del servidor",
+                             error_message="No se pudo cargar la información del lote",
+                             error_code=500,
+                             project=PROJECT_INFO), 500
+    finally:
+        cursor.close()
+        connection.close()
 
-@app.route('/predecir', methods=['POST'])
+# =====================================================
+# RUTAS PROTEGIDAS - ANÁLISIS DE LOTES
+# =====================================================
+
+@app.route('/analisis')
 @login_required
-def predecir():
+def analisis():
+    return render_template('analisis.html', project=PROJECT_INFO, current_year=2025)
+
+@app.route('/procesar_lote', methods=['POST'])
+@login_required
+def procesar_lote():
     try:
         # Obtener datos del formulario
+        codigo_lote = request.form.get('codigo_lote', '').strip()
+        fecha_elaboracion = request.form.get('fecha_elaboracion', '')
         abv = float(request.form.get('abv', 0))
         ibu = float(request.form.get('ibu', 0))
         srm = float(request.form.get('srm', 0))
         og = float(request.form.get('og', 0))
         fg = float(request.form.get('fg', 0))
-        aroma = float(request.form.get('aroma', 0))
-        turbidez = float(request.form.get('turbidez', 0))
+        porcentaje_cacao = float(request.form.get('porcentaje_cacao', 0))
+        dias_fermentacion = int(request.form.get('dias_fermentacion', 0))
+        dias_maduracion = int(request.form.get('dias_maduracion', 0))
         
-        # Crear array de características
-        features = np.array([[abv, ibu, srm, og, fg, aroma, turbidez]])
+        # Validaciones
+        if not codigo_lote or not fecha_elaboracion:
+            flash('Código de lote y fecha son obligatorios', 'danger')
+            return redirect(url_for('analisis'))
         
-        # Predecir
+        if fg >= og:
+            flash('Error: La densidad final (FG) debe ser menor que la inicial (OG)', 'danger')
+            return redirect(url_for('analisis'))
+        
+        # Verificar código duplicado
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute(
+                    "SELECT id FROM lotes_chocobrew WHERE codigo_lote = %s",
+                    (codigo_lote,)
+                )
+                if cursor.fetchone():
+                    flash(f'El código de lote "{codigo_lote}" ya existe. Usa otro código.', 'warning')
+                    cursor.close()
+                    connection.close()
+                    return redirect(url_for('analisis'))
+                cursor.close()
+                connection.close()
+            except Error as e:
+                logger.error(f"Error verificando código: {e}")
+        
+        # Calcular fecha de vencimiento
+        fecha_elab = datetime.strptime(fecha_elaboracion, '%Y-%m-%d')
+        fecha_venc = fecha_elab + timedelta(days=PROJECT_INFO['vida_util_dias'])
+        
+        # Predicción de calidad
+        features = np.array([[abv, ibu, srm, og, fg, porcentaje_cacao, dias_fermentacion, dias_maduracion]])
+        
         if model and scaler:
-            features_scaled = scaler.transform(features)
-            prediccion = model.predict(features_scaled)[0]
+            try:
+                features_scaled = scaler.transform(features)
+                prediccion = float(model.predict(features_scaled)[0])
+                logger.info(f"Predicción ML: {prediccion}")
+            except Exception as e:
+                logger.error(f"Error en predicción ML: {e}")
+                prediccion = 2.5 + (abv * 0.08) + (porcentaje_cacao * 0.15) - (ibu * 0.008) + (dias_maduracion * 0.02)
+                prediccion = float(np.clip(prediccion, 0, 5))
         else:
-            # Predicción simulada basada en características
-            prediccion = 2.5 + (abv * 0.1) + (aroma * 0.15) - (ibu * 0.01) + (turbidez * 0.1)
-            prediccion = np.clip(prediccion, 0, 5)
+            logger.warning("Modelo no disponible, usando fórmula basada en cacao")
+            prediccion = 2.5 + (abv * 0.08) + (porcentaje_cacao * 0.15) - (ibu * 0.008) + (dias_maduracion * 0.02)
+            prediccion = float(np.clip(prediccion, 0, 5))
         
-        # Calcular confianza
-        confianza = min(95, 70 + (aroma + turbidez) * 2)
-        
-        # Clasificar
+        # Clasificar calidad
         if prediccion >= 4.5:
-            categoria = "Excepcional"
-            color = "success"
+            categoria = "Premium"
         elif prediccion >= 4.0:
             categoria = "Excelente"
-            color = "info"
         elif prediccion >= 3.5:
             categoria = "Muy Buena"
-            color = "primary"
         elif prediccion >= 3.0:
             categoria = "Buena"
-            color = "warning"
         else:
             categoria = "Regular"
-            color = "danger"
         
-        resultado = {
-            'puntuacion': round(prediccion, 2),
+        # Calcular tabla nutricional
+        nutricional = calcular_tabla_nutricional(abv, porcentaje_cacao, og)
+        
+        # Datos del lote (SIN QR todavía)
+        datos_lote = {
+            'codigo_lote': codigo_lote,
+            'fecha_elaboracion': fecha_elaboracion,
+            'fecha_vencimiento': fecha_venc.strftime('%Y-%m-%d'),
+            'abv': float(abv),
+            'ibu': int(ibu),
+            'srm': int(srm),
+            'og': float(og),
+            'fg': float(fg),
+            'porcentaje_cacao': float(porcentaje_cacao),
+            'dias_fermentacion': int(dias_fermentacion),
+            'dias_maduracion': int(dias_maduracion),
+            'puntuacion': float(round(prediccion, 2)),
             'categoria': categoria,
-            'color': color,
-            'confianza': round(confianza, 1),
-            'caracteristicas': {
-                'ABV': f"{abv}%",
-                'IBU': int(ibu),
-                'SRM': int(srm),
-                'OG': og,
-                'FG': fg,
-                'Aroma': f"{aroma}/10",
-                'Turbidez': f"{turbidez}/10"
-            }
+            'nutricional': nutricional,
+            'qr_code': None  # ← Temporalmente None
         }
         
-        return render_template('results.html', 
-                             resultado=resultado, 
+        # 🔥 FLUJO MODIFICADO: Guardar PRIMERO para obtener el ID
+        lote_id = guardar_lote_en_bd(datos_lote, session['user_id'])
+        
+        if lote_id:
+            # ✅ Ahora SÍ generar el QR con el ID
+            qr_code = generar_codigo_qr(lote_id)
+            datos_lote['qr_code'] = qr_code
+            
+            # Actualizar el registro con el QR
+            connection = get_db_connection()
+            if connection and qr_code:
+                try:
+                    cursor = connection.cursor()
+                    cursor.execute(
+                        "UPDATE lotes_chocobrew SET qr_code_base64 = %s WHERE id = %s",
+                        (qr_code, lote_id)
+                    )
+                    connection.commit()
+                    logger.info(f"QR actualizado para lote ID: {lote_id}")
+                except Error as e:
+                    logger.error(f"Error actualizando QR: {e}")
+                finally:
+                    cursor.close()
+                    connection.close()
+            
+            flash('¡Lote guardado exitosamente!', 'success')
+        else:
+            flash('Advertencia: No se pudo guardar en la base de datos', 'warning')
+        
+        # También guardar en tabla predicciones para compatibilidad
+        connection = get_db_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute("""
+                    INSERT INTO predicciones 
+                    (user_id, abv, ibu, srm, og, fg, aroma, turbidez, puntuacion, categoria, confianza, fecha_prediccion)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                """, (
+                    session['user_id'], 
+                    float(abv),
+                    int(ibu),
+                    int(srm),
+                    float(og),
+                    float(fg),
+                    float(porcentaje_cacao),
+                    int(dias_maduracion),
+                    float(prediccion),
+                    categoria, 
+                    85.0
+                ))
+                connection.commit()
+            except Error as e:
+                logger.error(f"Error guardando predicción: {e}")
+            finally:
+                cursor.close()
+                connection.close()
+        
+        return render_template('resultado_lote.html', 
+                             lote=datos_lote,
                              project=PROJECT_INFO)
     
+    except ValueError as e:
+        logger.error(f"Error de validación: {e}")
+        flash(f"Error en los datos ingresados: {str(e)}", "danger")
+        return redirect(url_for('analisis'))
     except Exception as e:
-        logger.error(f"Error en predicción: {e}")
-        flash("Error al procesar la predicción. Verifica los datos ingresados.", "danger")
-        return redirect(url_for('prediccion'))
+        logger.error(f"Error procesando lote: {e}")
+        flash(f"Error al procesar el lote: {str(e)}", "danger")
+        return redirect(url_for('analisis'))
 
-# ==============================================
-# FUNCIONES DE CONTEXTO
-# ==============================================
+@app.route('/mis-lotes')
+@login_required
+def mis_lotes():
+    """Muestra todos los lotes del usuario actual"""
+    connection = get_db_connection()
+    lotes = []
+    
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT * FROM lotes_chocobrew 
+                WHERE user_id = %s 
+                ORDER BY fecha_elaboracion DESC
+            """, (session['user_id'],))
+            lotes_raw = cursor.fetchall()
+            
+            for lote in lotes_raw:
+                lote['puntuacion'] = float(lote['puntuacion'])
+                lote['abv'] = float(lote['abv'])
+                lote['og'] = float(lote['og'])
+                lote['fg'] = float(lote['fg'])
+                lote['porcentaje_cacao'] = float(lote['porcentaje_cacao'])
+                lote['carbohidratos'] = float(lote['carbohidratos'])
+                lote['proteinas'] = float(lote['proteinas'])
+                lote['grasas'] = float(lote['grasas'])
+                lote['azucares'] = float(lote['azucares'])
+                lotes.append(lote)
+                
+        except Error as e:
+            logger.error(f"Error obteniendo lotes: {e}")
+            flash('Error al cargar los lotes', 'danger')
+        finally:
+            cursor.close()
+            connection.close()
+    
+    return render_template('mis_lotes.html', lotes=lotes, project=PROJECT_INFO)
+
+@app.route('/ver-lote/<int:lote_id>')
+@login_required
+def ver_lote(lote_id):
+    """Ver detalles de un lote específico"""
+    connection = get_db_connection()
+    
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT * FROM lotes_chocobrew 
+                WHERE id = %s AND user_id = %s
+            """, (lote_id, session['user_id']))
+            lote = cursor.fetchone()
+            
+            if lote:
+                datos_lote = {
+                    'codigo_lote': lote['codigo_lote'],
+                    'fecha_elaboracion': lote['fecha_elaboracion'].strftime('%Y-%m-%d'),
+                    'fecha_vencimiento': lote['fecha_vencimiento'].strftime('%Y-%m-%d'),
+                    'abv': float(lote['abv']),
+                    'ibu': lote['ibu'],
+                    'srm': lote['srm'],
+                    'og': float(lote['og']),
+                    'fg': float(lote['fg']),
+                    'porcentaje_cacao': float(lote['porcentaje_cacao']),
+                    'dias_fermentacion': lote['dias_fermentacion'],
+                    'dias_maduracion': lote['dias_maduracion'],
+                    'puntuacion': float(lote['puntuacion']),
+                    'categoria': lote['categoria'],
+                    'nutricional': {
+                        'calorias': lote['calorias'],
+                        'carbohidratos': float(lote['carbohidratos']),
+                        'proteinas': float(lote['proteinas']),
+                        'grasas': float(lote['grasas']),
+                        'azucares': float(lote['azucares']),
+                        'alcohol': float(lote['abv'])
+                    },
+                    'qr_code': lote['qr_code_base64']
+                }
+                
+                return render_template('resultado_lote.html', 
+                                     lote=datos_lote,
+                                     project=PROJECT_INFO)
+            else:
+                flash('Lote no encontrado', 'warning')
+                return redirect(url_for('mis_lotes'))
+                
+        except Error as e:
+            logger.error(f"Error obteniendo lote: {e}")
+            flash('Error al cargar el lote', 'danger')
+        finally:
+            cursor.close()
+            connection.close()
+    
+    return redirect(url_for('mis_lotes'))
+
+# =====================================================
+# RUTA PREDICCIÓN (para compatibilidad con base.html)
+# =====================================================
+
+@app.route('/prediccion')
+@login_required
+def prediccion():
+    """Redirige a análisis de lote"""
+    return redirect(url_for('analisis'))
+
+# =====================================================
+# CONTEXT PROCESSOR
+# =====================================================
 
 @app.context_processor
 def inject_globals():
@@ -385,13 +801,28 @@ def inject_globals():
         'user_name': session.get('user_name', '')
     }
 
-# ==============================================
-# INICIALIZACIÓN
-# ==============================================
+# =====================================================
+# MAIN
+# =====================================================
 
 if __name__ == '__main__':
-    # Crear directorios necesarios
     for directory in ['templates', 'static/css', 'static/js', 'static/img', 'model', 'data']:
         os.makedirs(directory, exist_ok=True)
+    
+    connection = get_db_connection()
+    if connection:
+        logger.info("✓ Conexión a MySQL exitosa")
+        connection.close()
+    else:
+        logger.warning("⚠ No se pudo conectar a MySQL. Verifica la configuración.")
+    
+    ip_local = obtener_ip_local()
+    logger.info(f"Iniciando aplicación CHOCOBREW v{PROJECT_INFO['version']}")
+    logger.info(f"")
+    logger.info(f"🌐 Accede desde tu PC: http://localhost:5000")
+    logger.info(f"📱 Accede desde tu celular: http://{ip_local}:5000")
+    logger.info(f"")
+    logger.info(f"⚠️  Asegúrate de que tu celular esté en la misma red WiFi")
+    logger.info(f"")
     
     app.run(debug=True, host='0.0.0.0', port=5000)
