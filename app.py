@@ -14,11 +14,12 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
     from psycopg2 import Error
+    # psycopg2-binary ES psycopg2, solo el nombre del paquete es diferente
     POSTGRES_AVAILABLE = True
-    print("✅ psycopg2 disponible")
-except ImportError:
+    print("✅ PostgreSQL disponible")
+except ImportError as e:
     POSTGRES_AVAILABLE = False
-    print("⚠️ psycopg2 no disponible - Modo desarrollo")
+    print(f"⚠️ PostgreSQL no disponible: {e}")
 
 def get_db_connection():
     if not POSTGRES_AVAILABLE:
@@ -72,32 +73,29 @@ try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
     from psycopg2 import Error
+    POSTGRES_AVAILABLE = True
+    print("🎯 psycopg2-binary instalado correctamente")
+except ImportError as e:
+    POSTGRES_AVAILABLE = False
+    print(f"❌ Error importando psycopg2: {e}")
+
+def get_db_connection():
+    if not POSTGRES_AVAILABLE:
+        print("🔧 Modo desarrollo - PostgreSQL no disponible")
+        return None
     
-    def get_db_connection():
-        try:
-            # Usar DATABASE_URL de las variables de entorno (Render)
-            database_url = os.environ.get('DATABASE_URL')
-            if database_url:
-                connection = psycopg2.connect(database_url, cursor_factory=RealDictCursor)
-            else:
-                # Fallback para desarrollo local
-                connection = psycopg2.connect(
-                    host=os.environ.get('PGHOST', 'localhost'),
-                    database=os.environ.get('PGDATABASE', 'beer_predictor_db'),
-                    user=os.environ.get('PGUSER', 'postgres'),
-                    password=os.environ.get('PGPASSWORD', ''),
-                    port=os.environ.get('PGPORT', 5432),
-                    cursor_factory=RealDictCursor
-                )
+    try:
+        database_url = os.environ.get('DATABASE_URL')
+        if database_url:
+            print(f"🎯 Intentando conectar a: {database_url[:50]}...")
+            connection = psycopg2.connect(database_url, cursor_factory=RealDictCursor)
+            print("✅ ¡CONEXIÓN EXITOSA a PostgreSQL!")
             return connection
-        except Error as e:
-            logger.error(f"Error conectando a PostgreSQL: {e}")
+        else:
+            print("❌ DATABASE_URL no configurado")
             return None
-    
-    logger.info("Módulo PostgreSQL disponible")
-except ImportError:
-    logger.warning("psycopg2 no disponible. Instala: pip install psycopg2-binary")
-    def get_db_connection():
+    except Exception as e:
+        print(f"❌ Error conectando a PostgreSQL: {e}")
         return None
 
 # Decorador login
