@@ -1,367 +1,959 @@
-{% extends "base.html" %}
-
-{% block title %}Resultado Lote {{ lote.codigo_lote }} - CHOCOBREW{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %}Resultado Lote {{ lote.codigo_lote }}
+- CHOCOBREW{% endblock %} {% block extra_css %}
 <style>
-    .cacao-theme {
-        background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
+  /* Hero Success */
+  .hero-success {
+    background: linear-gradient(
+      135deg,
+      rgba(40, 167, 69, 0.95) 0%,
+      rgba(92, 184, 92, 0.95) 100%
+    );
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-success::before {
+    content: "";
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
     }
-    
-    .qr-container {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        display: inline-block;
+    50% {
+      transform: scale(1.5);
+      opacity: 0;
     }
-    
-    .resultado-card {
-        animation: slideUp 0.6s ease-out;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+  }
+
+  .success-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: successBounce 1s ease-out;
+  }
+
+  @keyframes successBounce {
+    0% {
+      transform: scale(0) rotate(-180deg);
+      opacity: 0;
     }
-    
-    @keyframes slideUp {
-        from {
-            transform: translateY(30px);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
+    50% {
+      transform: scale(1.2) rotate(10deg);
     }
-    
+    100% {
+      transform: scale(1) rotate(0);
+      opacity: 1;
+    }
+  }
+
+  .hero-title {
+    font-family: "Playfair Display", serif;
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+  }
+
+  /* Main Section */
+  .result-section {
+    padding: 60px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .result-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+    animation: slideUp 0.6s ease-out both;
+    animation-delay: var(--delay, 0s);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card-title {
+    font-family: "Playfair Display", serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #3e2723;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .card-title i {
+    color: #8b4513;
+  }
+
+  /* QR Container */
+  .qr-container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .qr-container::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff6600, #ffaa00, #ff6600);
+    background-size: 400% 400%;
+    z-index: -1;
+    border-radius: 20px;
+    animation: gradientRotate 3s ease infinite;
+  }
+
+  @keyframes gradientRotate {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .qr-container img {
+    max-width: 300px;
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  /* Score Circle */
+  .score-circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b4513, #a0522d);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 15px 40px rgba(139, 69, 19, 0.4);
+    position: relative;
+    animation: scaleIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .score-circle::before {
+    content: "";
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    border: 3px dashed rgba(255, 255, 255, 0.3);
+    animation: rotate 10s linear infinite;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .score-number {
+    font-size: 4.5rem;
+    color: white;
+    font-weight: 900;
+    font-family: "Playfair Display", serif;
+  }
+
+  .stars {
+    color: #ffd700;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .stars i {
+    animation: starPop 0.5s ease-out both;
+    animation-delay: calc(var(--i) * 0.1s);
+  }
+
+  @keyframes starPop {
+    0% {
+      transform: scale(0) rotate(-180deg);
+    }
+    50% {
+      transform: scale(1.3) rotate(10deg);
+    }
+    100% {
+      transform: scale(1) rotate(0);
+    }
+  }
+
+  .category-badge {
+    background: #8b4513;
+    color: white;
+    padding: 12px 40px;
+    border-radius: 50px;
+    font-size: 1.4rem;
+    font-weight: 900;
+    display: inline-block;
+    box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3);
+    font-family: "Playfair Display", serif;
+  }
+
+  /* Info Box */
+  .info-box {
+    background: #f5f5dc;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+  }
+
+  .info-row:last-child {
+    border-bottom: none;
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: #3e2723;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-value {
+    font-weight: 900;
+    color: #8b4513;
+    font-size: 1.3rem;
+    font-family: "Playfair Display", serif;
+  }
+
+  /* Características Grid */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .char-item {
+    background: #f5f5dc;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .char-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: white;
+  }
+
+  .char-item i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .char-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+  }
+
+  .char-value {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #3e2723;
+    font-family: "Playfair Display", serif;
+  }
+
+  /* Tabla Nutricional */
+  .nutri-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .nutri-table thead th {
+    background: linear-gradient(135deg, #8b4513, #a0522d);
+    color: white;
+    padding: 18px;
+    font-weight: 700;
+    text-align: left;
+    font-size: 1.1rem;
+  }
+
+  .nutri-table thead th:nth-child(2),
+  .nutri-table thead th:nth-child(3) {
+    text-align: right;
+  }
+
+  .nutri-table tbody tr {
+    background: white;
+    transition: all 0.3s ease;
+  }
+
+  .nutri-table tbody tr:nth-child(even) {
+    background: #fafafa;
+  }
+
+  .nutri-table tbody tr:hover {
+    background: #f5f5dc;
+    transform: scale(1.02);
+  }
+
+  .nutri-table tbody td {
+    padding: 15px 18px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .nutri-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .nutri-table tbody td:first-child {
+    font-weight: 600;
+    color: #3e2723;
+    width: 50%;
+  }
+
+  .nutri-table tbody td:nth-child(2) {
+    text-align: right;
+    font-weight: 900;
+    color: #8b4513;
+    font-size: 1.2rem;
+    font-family: "Playfair Display", serif;
+    width: 25%;
+  }
+
+  .nutri-table tbody td:nth-child(3) {
+    text-align: right;
+    font-weight: 600;
+    color: #666;
+    width: 25%;
+  }
+
+  .nutri-subrow {
+    background: #f9f9f9 !important;
+  }
+
+  .nutri-subrow td:first-child {
+    padding-left: 40px;
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .nutri-subrow td:nth-child(2) {
+    font-size: 1.05rem;
+  }
+
+  @media (max-width: 768px) {
     .nutri-table {
-        background: white;
-        border: 3px solid #8B4513;
-        border-radius: 10px;
+      font-size: 0.9rem;
     }
-    
-    .nutri-table th {
-        background: #8B4513;
-        color: white;
-        padding: 12px;
+
+    .nutri-table thead th {
+      padding: 12px;
+      font-size: 0.95rem;
     }
-    
-    .btn-cacao {
-        background: #8B4513;
-        color: white;
-        font-weight: 700;
-        padding: 12px 30px;
-        border-radius: 50px;
-        border: none;
-        transition: all 0.3s ease;
+
+    .nutri-table tbody td {
+      padding: 12px 10px;
     }
-    
-    .btn-cacao:hover {
-        background: #A0522D;
-        transform: translateY(-3px);
-        color: white;
+
+    .nutri-table tbody td:nth-child(2) {
+      font-size: 1.1rem;
     }
+  }
+
+  /* Alert Date */
+  .alert-date {
+    background: linear-gradient(135deg, #ffe4e1, #ffb6c1);
+    border-left: 5px solid #dc3545;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+  }
+
+  .alert-date-label {
+    font-weight: 700;
+    color: #721c24;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+  }
+
+  .alert-date-value {
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: #dc3545;
+    font-family: "Playfair Display", serif;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .btn-primary-action {
+    background: linear-gradient(135deg, #8b4513, #a0522d);
+    color: white;
+    box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3);
+  }
+
+  .btn-primary-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(139, 69, 19, 0.5);
+    color: white;
+  }
+
+  .btn-secondary-action {
+    background: white;
+    color: #6c757d;
+    border: 2px solid #6c757d;
+  }
+
+  .btn-secondary-action:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .success-icon {
+      font-size: 3.5rem;
+    }
+
+    .result-card {
+      padding: 25px 20px;
+    }
+
+    .qr-container {
+      padding: 25px;
+    }
+
+    .qr-container img {
+      max-width: 250px;
+    }
+
+    .score-circle {
+      width: 150px;
+      height: 150px;
+    }
+
+    .score-number {
+      font-size: 3.5rem;
+    }
+
+    .stars {
+      font-size: 2rem;
+    }
+
+    .char-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn-action {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .nutri-table {
+      font-size: 0.9rem;
+    }
+  }
 </style>
-{% endblock %}
-
-{% block content %}
-<!-- Hero -->
-<section class="cacao-theme" style="min-height: 30vh; display: flex; align-items: center;">
-    <div class="container text-center text-white">
-        <i class="fas fa-check-circle" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-        <h1 class="display-5 fw-bold">Análisis Completado</h1>
-        <p class="lead">Lote: {{ lote.codigo_lote }}</p>
+{% endblock %} {% block content %}
+<!-- Hero Success -->
+<section class="hero-success">
+  <div class="container">
+    <div class="hero-content">
+      <i class="fas fa-check-circle success-icon"></i>
+      <h1 class="hero-title">¡Análisis Completado!</h1>
+      <p class="hero-subtitle">Lote: {{ lote.codigo_lote }}</p>
     </div>
+  </div>
 </section>
 
-<!-- Resultados -->
-<section class="py-5">
-    <div class="container">
-        <!-- Código QR Principal -->
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card-beer p-5 text-center resultado-card">
-                    <h2 class="fw-bold mb-4" style="color: #3E2723;">
-                        <i class="fas fa-qrcode me-2"></i>Código QR Generado
-                    </h2>
-                    
-                    {% if lote.qr_code %}
-                    <div class="qr-container mx-auto mb-4">
-                        <img src="data:image/png;base64,{{ lote.qr_code }}" alt="QR Code" style="max-width: 300px;">
-                    </div>
-                    <p class="text-muted mb-4">Escanea este código para ver toda la información del producto</p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <button onclick="descargarQR()" class="btn btn-cacao">
-                            <i class="fas fa-download me-2"></i>Descargar QR
-                        </button>
-                        <button onclick="imprimirEtiqueta()" class="btn btn-outline-secondary">
-                            <i class="fas fa-print me-2"></i>Imprimir Etiqueta
-                        </button>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        No se pudo generar el código QR. Instala: pip install qrcode[pil]
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<!-- Results Section -->
+<section class="result-section">
+  <div class="container">
+    <!-- QR Code Card -->
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="result-card text-center" style="--delay: 0.1s">
+          <h2 class="card-title justify-content-center">
+            <i class="fas fa-qrcode"></i>
+            Código QR Generado
+          </h2>
 
-        <!-- Información del Lote -->
-        <div class="row mb-4">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4">
-                    <h4 class="fw-bold mb-4" style="color: #3E2723;">
-                        <i class="fas fa-info-circle me-2" style="color: #8B4513;"></i>
-                        Información del Lote
-                    </h4>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="p-3 rounded" style="background: #F5F5DC;">
-                                <div class="text-muted small mb-1">Código de Lote</div>
-                                <div class="fw-bold" style="font-size: 1.2rem; color: #3E2723;">{{ lote.codigo_lote }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded" style="background: #F5F5DC;">
-                                <div class="text-muted small mb-1">Fecha de Elaboración</div>
-                                <div class="fw-bold" style="font-size: 1.2rem; color: #3E2723;">{{ lote.fecha_elaboracion }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="p-3 rounded" style="background: #FFE4E1;">
-                                <div class="text-muted small mb-1">Fecha de Vencimiento</div>
-                                <div class="fw-bold" style="font-size: 1.2rem; color: #dc3545;">{{ lote.fecha_vencimiento }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          {% if lote.qr_code %}
+          <div class="qr-container mx-auto mb-4">
+            <img src="data:image/png;base64,{{ lote.qr_code }}" alt="QR Code" />
+          </div>
+          <p class="text-muted mb-4">
+            Escanea este código para ver toda la información del producto
+          </p>
+          <div class="action-buttons">
+            <button
+              onclick="descargarQR()"
+              class="btn-action btn-primary-action"
+            >
+              <i class="fas fa-download"></i>
+              Descargar QR
+            </button>
+            <button
+              onclick="imprimirEtiqueta()"
+              class="btn-action btn-secondary-action"
+            >
+              <i class="fas fa-print"></i>
+              Imprimir Etiqueta
+            </button>
+          </div>
+          {% else %}
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            No se pudo generar el código QR. Instala: pip install qrcode[pil]
+          </div>
+          {% endif %}
         </div>
-
-        <!-- Calificación Predicha -->
-        <div class="row mb-4">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4 text-center">
-                    <h4 class="fw-bold mb-3" style="color: #3E2723;">Calificación de Calidad Predicha</h4>
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #8B4513, #A0522D); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                            <span style="font-size: 4rem; color: white; font-weight: 900;">{{ lote.puntuacion }}</span>
-                        </div>
-                    </div>
-                    <div class="stars mb-3" style="color: #FFD700; font-size: 2rem;">
-                        {% for i in range(5) %}
-                            {% if i < lote.puntuacion %}
-                                <i class="fas fa-star"></i>
-                            {% elif i < lote.puntuacion + 0.5 %}
-                                <i class="fas fa-star-half-alt"></i>
-                            {% else %}
-                                <i class="far fa-star"></i>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <h3>
-                        <span class="badge px-4 py-2" style="background: #8B4513; font-size: 1.3rem;">
-                            {{ lote.categoria }}
-                        </span>
-                    </h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Características del Producto -->
-        <div class="row mb-4">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4">
-                    <h4 class="fw-bold mb-4" style="color: #3E2723;">
-                        <i class="fas fa-flask me-2" style="color: #8B4513;"></i>
-                        Características del Producto
-                    </h4>
-                    <div class="row g-3">
-                        <div class="col-md-3 col-6">
-                            <div class="p-3 rounded text-center" style="background: #F5F5DC;">
-                                <i class="fas fa-percentage" style="color: #dc3545; font-size: 2rem;"></i>
-                                <div class="text-muted small mt-2">ABV</div>
-                                <div class="fw-bold" style="font-size: 1.5rem; color: #3E2723;">{{ lote.abv }}%</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-6">
-                            <div class="p-3 rounded text-center" style="background: #F5F5DC;">
-                                <i class="fas fa-leaf" style="color: #28a745; font-size: 2rem;"></i>
-                                <div class="text-muted small mt-2">IBU</div>
-                                <div class="fw-bold" style="font-size: 1.5rem; color: #3E2723;">{{ lote.ibu }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-6">
-                            <div class="p-3 rounded text-center" style="background: #F5F5DC;">
-                                <i class="fas fa-palette" style="color: #8B4513; font-size: 2rem;"></i>
-                                <div class="text-muted small mt-2">SRM</div>
-                                <div class="fw-bold" style="font-size: 1.5rem; color: #3E2723;">{{ lote.srm }}</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-6">
-                            <div class="p-3 rounded text-center" style="background: #FFE4B5;">
-                                <i class="fas fa-seedling" style="color: #8B4513; font-size: 2rem;"></i>
-                                <div class="text-muted small mt-2">Cacao</div>
-                                <div class="fw-bold" style="font-size: 1.5rem; color: #3E2723;">{{ lote.porcentaje_cacao }}%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabla Nutricional -->
-        <div class="row mb-4">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4">
-                    <h4 class="fw-bold mb-4" style="color: #3E2723;">
-                        <i class="fas fa-apple-alt me-2" style="color: #28a745;"></i>
-                        Información Nutricional (por 100ml)
-                    </h4>
-                    <div class="table-responsive">
-                        <table class="table nutri-table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Nutriente</th>
-                                    <th class="text-end">Cantidad</th>
-                                    <th class="text-end">Unidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Energía</strong></td>
-                                    <td class="text-end">{{ lote.nutricional.calorias }}</td>
-                                    <td class="text-end">kcal</td>
-                                </tr>
-                                <tr style="background: #E3F2FD;">
-                                    <td><strong>Carbohidratos totales</strong></td>
-                                    <td class="text-end"><strong>{{ lote.nutricional.carbohidratos }}</strong></td>
-                                    <td class="text-end"><strong>g</strong></td>
-                                </tr>
-                                <tr style="background: #F5F5F5;">
-                                    <td style="padding-left: 30px; font-size: 0.9rem; color: #666;">
-                                        <i class="fas fa-level-up-alt fa-rotate-90" style="opacity: 0.5; margin-right: 5px;"></i>
-                                        Incluye azúcares
-                                    </td>
-                                    <td class="text-end" style="color: #666;">{{ lote.nutricional.azucares }}</td>
-                                    <td class="text-end" style="color: #666;">g</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Proteínas</strong></td>
-                                    <td class="text-end">{{ lote.nutricional.proteinas }}</td>
-                                    <td class="text-end">g</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Grasas</strong></td>
-                                    <td class="text-end">{{ lote.nutricional.grasas }}</td>
-                                    <td class="text-end">g</td>
-                                </tr>
-                                <tr style="background: #FFF8DC; border-top: 3px solid #8B4513;">
-                                    <td><strong>Alcohol</strong></td>
-                                    <td class="text-end"><strong>{{ lote.nutricional.alcohol }}</strong></td>
-                                    <td class="text-end"><strong>% vol</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="alert alert-info mt-3 mb-0">
-                        <small>
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Nota:</strong> Los azúcares están incluidos dentro de los carbohidratos totales. 
-                            Valores calculados según la receta estándar de CHOCOBREW.
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Proceso de Elaboración -->
-        <div class="row mb-4">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4">
-                    <h4 class="fw-bold mb-4" style="color: #3E2723;">
-                        <i class="fas fa-industry me-2" style="color: #8B4513;"></i>
-                        Datos del Proceso
-                    </h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><i class="fas fa-clock text-warning me-2"></i><strong>Fermentación:</strong> {{ lote.dias_fermentacion }} días</p>
-                            <p><i class="fas fa-hourglass-half text-info me-2"></i><strong>Maduración:</strong> {{ lote.dias_maduracion }} días</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><i class="fas fa-tint text-primary me-2"></i><strong>OG:</strong> {{ lote.og }}</p>
-                            <p><i class="fas fa-flask text-secondary me-2"></i><strong>FG:</strong> {{ lote.fg }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Acciones -->
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4 text-center">
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{{ url_for('analisis') }}" class="btn btn-cacao">
-                            <i class="fas fa-plus me-2"></i>Nuevo Lote
-                        </a>
-                        <button onclick="window.print()" class="btn btn-outline-secondary">
-                            <i class="fas fa-print me-2"></i>Imprimir Todo
-                        </button>
-                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-home me-2"></i>Inicio
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</section>
-{% endblock %}
 
-{% block extra_js %}
+    <!-- Información del Lote -->
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="result-card" style="--delay: 0.2s">
+          <h4 class="card-title">
+            <i class="fas fa-info-circle"></i>
+            Información del Lote
+          </h4>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="info-box">
+                <div class="info-label">
+                  <i class="fas fa-barcode"></i>
+                  Código de Lote
+                </div>
+                <div class="info-value">{{ lote.codigo_lote }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="info-box">
+                <div class="info-label">
+                  <i class="fas fa-calendar-check"></i>
+                  Elaboración
+                </div>
+                <div class="info-value">{{ lote.fecha_elaboracion }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="info-box" style="background: #ffe4e1">
+                <div class="info-label">
+                  <i class="fas fa-calendar-times"></i>
+                  Vencimiento
+                </div>
+                <div class="info-value" style="color: #dc3545">
+                  {{ lote.fecha_vencimiento }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calificación -->
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="result-card text-center" style="--delay: 0.3s">
+          <h4 class="card-title justify-content-center">
+            <i class="fas fa-star"></i>
+            Calificación de Calidad Predicha
+          </h4>
+          <div class="score-circle">
+            <span class="score-number">{{ lote.puntuacion }}</span>
+          </div>
+          <div class="stars">
+            {% set puntuacion_float = lote.puntuacion|float %} {% for i in
+            range(5) %}
+            <i
+              class="{% if i < puntuacion_float|int %}fas{% elif i < (puntuacion_float|int + 1) and (puntuacion_float - puntuacion_float|int) >= 0.5 %}fas fa-star-half-alt{% else %}far{% endif %} fa-star"
+              style="--i: {{ i }}"
+            ></i>
+            {% endfor %}
+          </div>
+          <span class="category-badge">{{ lote.categoria }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Características -->
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="result-card" style="--delay: 0.4s">
+          <h4 class="card-title">
+            <i class="fas fa-flask"></i>
+            Características del Producto
+          </h4>
+          <div class="char-grid">
+            <div class="char-item">
+              <i class="fas fa-percentage" style="color: #dc3545"></i>
+              <div class="char-label">ABV</div>
+              <div class="char-value">{{ lote.abv }}%</div>
+            </div>
+            <div class="char-item">
+              <i class="fas fa-seedling" style="color: #8b4513"></i>
+              <div class="char-label">Cacao</div>
+              <div class="char-value">{{ lote.porcentaje_cacao }}%</div>
+            </div>
+            <div class="char-item">
+              <i class="fas fa-leaf" style="color: #28a745"></i>
+              <div class="char-label">IBU</div>
+              <div class="char-value">{{ lote.ibu }}</div>
+            </div>
+            <div class="char-item">
+              <i class="fas fa-palette" style="color: #8b4513"></i>
+              <div class="char-label">SRM</div>
+              <div class="char-value">{{ lote.srm }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla Nutricional -->
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="result-card" style="--delay: 0.5s">
+          <h4 class="card-title">
+            <i class="fas fa-apple-alt"></i>
+            Información Nutricional (por 100ml)
+          </h4>
+          <div class="table-responsive">
+            <table class="nutri-table">
+              <thead>
+                <tr>
+                  <th>Nutriente</th>
+                  <th style="text-align: right">Cantidad</th>
+                  <th style="text-align: right">Unidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Energía</td>
+                  <td>{{ lote.nutricional.calorias }}</td>
+                  <td>kcal</td>
+                </tr>
+                <tr style="background: #e3f2fd">
+                  <td><strong>Carbohidratos totales</strong></td>
+                  <td><strong>{{ lote.nutricional.carbohidratos }}</strong></td>
+                  <td><strong>g</strong></td>
+                </tr>
+                <tr class="nutri-subrow">
+                  <td>
+                    <i
+                      class="fas fa-level-up-alt fa-rotate-90"
+                      style="opacity: 0.5; margin-right: 5px"
+                    ></i>
+                    Incluye azúcares
+                  </td>
+                  <td>{{ lote.nutricional.azucares }}</td>
+                  <td>g</td>
+                </tr>
+                <tr>
+                  <td>Proteínas</td>
+                  <td>{{ lote.nutricional.proteinas }}</td>
+                  <td>g</td>
+                </tr>
+                <tr>
+                  <td>Grasas</td>
+                  <td>{{ lote.nutricional.grasas }}</td>
+                  <td>g</td>
+                </tr>
+                <tr style="background: #fff8dc">
+                  <td><strong>Alcohol</strong></td>
+                  <td><strong>{{ lote.nutricional.alcohol }}</strong></td>
+                  <td><strong>% vol</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="alert alert-info mt-3 mb-0">
+            <small>
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>Nota:</strong> Los azúcares están incluidos dentro de los
+              carbohidratos totales. Valores calculados según la receta estándar
+              de CHOCOBREW.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Proceso de Elaboración -->
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="result-card" style="--delay: 0.6s">
+          <h4 class="card-title">
+            <i class="fas fa-industry"></i>
+            Datos del Proceso
+          </h4>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="info-box">
+                <div class="info-row">
+                  <div class="info-label">
+                    <i class="fas fa-clock text-warning"></i>
+                    Fermentación
+                  </div>
+                  <div class="info-value">
+                    {{ lote.dias_fermentacion }} días
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="info-box">
+                <div class="info-row">
+                  <div class="info-label">
+                    <i class="fas fa-hourglass-half text-info"></i>
+                    Maduración
+                  </div>
+                  <div class="info-value">{{ lote.dias_maduracion }} días</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-box">
+                <div class="info-row">
+                  <div class="info-label">
+                    <i class="fas fa-tint text-primary"></i>
+                    OG (Inicial)
+                  </div>
+                  <div class="info-value">{{ lote.og }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="info-box">
+                <div class="info-row">
+                  <div class="info-label">
+                    <i class="fas fa-flask" style="color: #6c757d"></i>
+                    FG (Final)
+                  </div>
+                  <div class="info-value">{{ lote.fg }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones Finales -->
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="result-card text-center" style="--delay: 0.7s">
+          <div class="action-buttons">
+            <a
+              href="{{ url_for('analisis') }}"
+              class="btn-action btn-primary-action"
+            >
+              <i class="fas fa-plus"></i>
+              Nuevo Lote
+            </a>
+            <button
+              onclick="window.print()"
+              class="btn-action btn-secondary-action"
+            >
+              <i class="fas fa-print"></i>
+              Imprimir Todo
+            </button>
+            <a
+              href="{{ url_for('mis_lotes') }}"
+              class="btn-action btn-secondary-action"
+            >
+              <i class="fas fa-boxes"></i>
+              Mis Lotes
+            </a>
+            <a
+              href="{{ url_for('index') }}"
+              class="btn-action btn-secondary-action"
+            >
+              <i class="fas fa-home"></i>
+              Inicio
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %} {% block extra_js %}
 <script>
-    function descargarQR() {
-        const qrImg = document.querySelector('.qr-container img');
-        if (qrImg) {
-            const link = document.createElement('a');
-            link.href = qrImg.src;
-            link.download = 'CHOCOBREW_{{ lote.codigo_lote }}_QR.png';
-            link.click();
-        }
+  function descargarQR() {
+    const qrImg = document.querySelector(".qr-container img");
+    if (qrImg) {
+      const link = document.createElement("a");
+      link.href = qrImg.src;
+      link.download = "CHOCOBREW_{{ lote.codigo_lote }}_QR.png";
+      link.click();
     }
-    
-    function imprimirEtiqueta() {
-        const contenido = document.querySelector('.qr-container').innerHTML;
-        const ventana = window.open('', '_blank');
-        ventana.document.write(`
+  }
+
+  function imprimirEtiqueta() {
+    const contenido = document.querySelector(".qr-container").innerHTML;
+    const ventana = window.open("", "_blank");
+    ventana.document.write(`
             <html>
             <head>
                 <title>Etiqueta {{ lote.codigo_lote }}</title>
                 <style>
                     body { 
                         text-align: center; 
-                        font-family: Arial, sans-serif;
+                        font-family: 'Playfair Display', Georgia, serif;
                         padding: 20px;
+                        background: white;
                     }
-                    h2 { color: #8B4513; }
-                    .info { margin: 20px 0; }
+                    h2 { 
+                        color: #8B4513; 
+                        font-size: 2rem;
+                        margin-bottom: 10px;
+                    }
+                    .subtitle {
+                        color: #666;
+                        font-size: 1rem;
+                        margin-bottom: 30px;
+                    }
+                    .info { 
+                        margin: 30px 0;
+                        font-size: 1.1rem;
+                        line-height: 1.8;
+                    }
+                    .info p {
+                        margin: 10px 0;
+                    }
+                    .highlight {
+                        color: #8B4513;
+                        font-weight: 700;
+                    }
                 </style>
             </head>
             <body>
-                <h2>CHOCOBREW</h2>
-                <p><strong>Cerveza Artesanal de Cacao</strong></p>
+                <h2>🍫 CHOCOBREW</h2>
+                <p class="subtitle">Cerveza Artesanal de Cacao</p>
                 ${contenido}
                 <div class="info">
-                    <p>Lote: {{ lote.codigo_lote }}</p>
-                    <p>Elaborado: {{ lote.fecha_elaboracion }}</p>
-                    <p>Vence: {{ lote.fecha_vencimiento }}</p>
-                    <p>ABV: {{ lote.abv }}% | Cacao: {{ lote.porcentaje_cacao }}%</p>
+                    <p><strong>Lote:</strong> <span class="highlight">{{ lote.codigo_lote }}</span></p>
+                    <p><strong>Elaborado:</strong> {{ lote.fecha_elaboracion }}</p>
+                    <p><strong>Vence:</strong> {{ lote.fecha_vencimiento }}</p>
+                    <p><strong>ABV:</strong> {{ lote.abv }}% | <strong>Cacao:</strong> {{ lote.porcentaje_cacao }}%</p>
+                    <p><strong>Calidad:</strong> {{ lote.categoria }} ({{ lote.puntuacion }}⭐)</p>
                 </div>
             </body>
             </html>
         `);
-        ventana.document.close();
-        ventana.print();
-    }
+    ventana.document.close();
+    setTimeout(() => ventana.print(), 500);
+  }
 </script>
 {% endblock %}

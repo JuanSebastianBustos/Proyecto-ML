@@ -692,15 +692,24 @@
     <!-- Partículas flotantes -->
     <div class="particles" id="particles"></div>
 
-    <header>
-        <div class="logo"><i class="fas fa-beer"></i> CHOCOBREW</div>
-        <nav>
-            <ul>
-                <li style="--i:1"><a href="#inicio">Inicio</a></li>
-                <li style="--i:2"><a href="#proyecto-ml">Proyecto ML</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <div class="logo"><i class="fas fa-beer"></i> CHOCOBREW</div>
+    <nav>
+        <ul class="nav-menu">
+            {% if user_logged_in %}
+                <!-- Usuario AUTENTICADO -->
+                <li style="--i:1"><a href="{{ url_for('index') }}" class="nav-link">Inicio</a></li>
+                <li style="--i:2"><a href="{{ url_for('analisis') }}" class="nav-link">Nuevo Lote</a></li>
+                <li style="--i:3"><a href="{{ url_for('mis_lotes') }}" class="nav-link">Mis Lotes</a></li>
+                <li style="--i:4"><a href="{{ url_for('logout') }}" class="nav-link">Cerrar Sesión</a></li>
+            {% else %}
+                <!-- Usuario NO autenticado -->
+                <li style="--i:1"><a href="{{ url_for('index') }}" class="nav-link">Inicio</a></li>
+                <li style="--i:2"><a href="{{ url_for('login') }}" class="nav-link">Iniciar Sesión</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
 
     <section id="inicio" class="hero">
         <h1>CHOCOBREW</h1>

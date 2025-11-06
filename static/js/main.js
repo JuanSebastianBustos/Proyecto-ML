@@ -309,3 +309,150 @@ function copyToClipboard(text) {
         showNotification('Error al copiar', 'error');
     });
 }
+
+// ====================================
+// SISTEMA DE AUTENTICACIÓN CHOCOBREW
+// ====================================
+
+class AuthSystem {
+    constructor() {
+        this.isLoggedIn = localStorage.getItem('chocobrew_loggedIn') === 'true';
+        this.init();
+    }
+
+    init() {
+        this.updateNavigation();
+        this.setupEventListeners();
+        console.log('Sistema de autenticación CHOCOBREW inicializado');
+    }
+
+    updateNavigation() {
+        const publicItems = document.querySelectorAll('.nav-item.public');
+        const privateItems = document.querySelectorAll('.nav-item.private');
+
+        if (this.isLoggedIn) {
+            // Mostrar botones privados, ocultar públicos
+            publicItems.forEach(item => item.classList.add('hidden'));
+            privateItems.forEach(item => item.classList.remove('hidden'));
+            console.log('Modo: Usuario autenticado');
+        } else {
+            // Mostrar botones públicos, ocultar privados
+            publicItems.forEach(item => item.classList.remove('hidden'));
+            privateItems.forEach(item => item.classList.add('hidden'));
+            console.log('Modo: Usuario invitado');
+        }
+    }
+
+    login() {
+        this.isLoggedIn = true;
+        localStorage.setItem('chocobrew_loggedIn', 'true');
+        this.updateNavigation();
+        this.showMessage('Sesión iniciada correctamente', 'success');
+        
+        // Cerrar menú móvil si está abierto
+        this.closeMobileMenu();
+    }
+
+    logout() {
+        this.isLoggedIn = false;
+        localStorage.removeItem('chocobrew_loggedIn');
+        this.updateNavigation();
+        this.showMessage('Sesión cerrada correctamente', 'info');
+        
+        // Cerrar menú móvil si está abierto
+        this.closeMobileMenu();
+    }
+
+    closeMobileMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (hamburger && navMenu) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    }
+
+    setupEventListeners() {
+        // Botón de iniciar sesión
+        document.getElementById('login-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.showLoginModal();
+        });
+
+        // Botón de cerrar sesión
+        document.getElementById('logout-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.logout();
+        });
+
+        // Botón de nuevo lote
+        document.getElementById('new-batch-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (this.isLoggedIn) {
+                this.showMessage('Redirigiendo a creación de nuevo lote...', 'info');
+                // Aquí puedes redirigir a la página de nuevo lote
+            }
+        });
+
+        // Botón de mis lotes
+        document.getElementById('my-batches-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (this.isLoggedIn) {
+                this.showMessage('Redirigiendo a mis lotes...', 'info');
+                // Aquí puedes redirigir a la página de mis lotes
+            }
+        });
+    }
+
+    showLoginModal() {
+        // Usar tu función showNotification existente
+        showNotification('Iniciando proceso de autenticación...', 'info');
+        
+        // Simular proceso de login después de 1 segundo
+        setTimeout(() => {
+            this.login();
+        }, 1000);
+    }
+
+    showMessage(message, type) {
+        // Usar tu función showNotification existente
+        showNotification(message, type);
+    }
+}
+
+// Inicializar el sistema de autenticación cuando cargue la página
+document.addEventListener('DOMContentLoaded', function() {
+    // ... tu código existente ...
+    
+    // Inicializar sistema de autenticación
+    window.chocobrewAuth = new AuthSystem();
+    
+    console.log('%c🔐 Sistema de autenticación CHOCOBREW activo', 'color: #ff6600; font-size: 14px; font-weight: bold;');
+});
+
+// ====================================
+// UTILIDADES DE AUTENTICACIÓN
+// ====================================
+
+// Función para verificar autenticación en otras páginas
+function checkAuth() {
+    return localStorage.getItem('chocobrew_loggedIn') === 'true';
+}
+
+// Función para proteger rutas (para futuras páginas)
+function requireAuth() {
+    if (!checkAuth()) {
+        showNotification('Debes iniciar sesión para acceder a esta página', 'error');
+        return false;
+    }
+    return true;
+}
+
+// Función para obtener estado de autenticación
+function getAuthStatus() {
+    return {
+        isLoggedIn: checkAuth(),
+        timestamp: new Date().toISOString()
+    };
+}

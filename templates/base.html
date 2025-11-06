@@ -1,353 +1,522 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Beer Hazy Predictor{% endblock %}</title>
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}CHOCOBREW{% endblock %}</title>
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        * {
-            font-family: 'Montserrat', sans-serif;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(
+          to bottom,
+          #1a0f08 0%,
+          #3d2817 50%,
+          #d2b48c 100%
+        );
+        color: #f5f5f5;
+        min-height: 100vh;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Playfair Display", serif;
+      }
+
+      /* Partículas */
+      .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(210, 180, 140, 0.3);
+        border-radius: 50%;
+        animation: float-particle 15s infinite ease-in-out;
+      }
+
+      @keyframes float-particle {
+        0% {
+          transform: translateY(100vh);
+          opacity: 0;
         }
-        
-        :root {
-            --beer-amber: #F5A623;
-            --beer-dark: #2C1810;
-            --beer-gold: #D4A574;
-            --beer-cream: #F5EFE7;
-            --beer-brown: #5D4037;
+        50% {
+          opacity: 0.5;
         }
-        
-        body {
-            background-color: #FAFAFA;
-            color: var(--beer-dark);
+        100% {
+          transform: translateY(-100vh);
+          opacity: 0;
         }
-        
-        /* Navbar estilo Nómada */
-        .navbar-custom {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 1.2rem 0;
+      }
+
+      /* ==========================================
+           NAVBAR SUPER SIMPLE
+           ========================================== */
+      .chocobrew-navbar {
+        background: linear-gradient(135deg, #8b4513, #d2b48c);
+        padding: 15px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: white;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .logo:hover {
+        color: #ffaa00;
+      }
+
+      .nav-buttons {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+
+      .btn-custom {
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn-home {
+        background: linear-gradient(135deg, #8b4513, #d2b48c);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-home:hover {
+        background: linear-gradient(135deg, #a0522d, #e6c9a8);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
+        color: white;
+      }
+
+      .btn-login {
+        background: white;
+        color: #8b4513;
+      }
+
+      .btn-login:hover {
+        background: #ffaa00;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .btn-register {
+        background: linear-gradient(135deg, #ff6600, #ffaa00);
+        color: white;
+      }
+
+      .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
+      }
+
+      .btn-new-batch {
+        background: linear-gradient(135deg, #ff6600, #ffaa00);
+        color: white;
+      }
+
+      .btn-new-batch:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
+      }
+
+      .btn-my-batches {
+        background: white;
+        color: #8b4513;
+      }
+
+      .btn-my-batches:hover {
+        background: #f0f0f0;
+        transform: translateY(-2px);
+      }
+
+      .user-menu {
+        position: relative;
+      }
+
+      .user-button {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 8px 20px 8px 8px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .user-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .user-avatar {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(135deg, #ff6600, #ffaa00);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .dropdown-menu {
+        background: rgba(139, 69, 19, 0.98);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        padding: 10px;
+        min-width: 200px;
+      }
+
+      .dropdown-item {
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffaa00;
+      }
+
+      .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      /* Main content */
+      .main-content {
+        position: relative;
+        z-index: 1;
+        min-height: calc(100vh - 200px);
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(
+          135deg,
+          rgba(26, 15, 8, 0.95),
+          rgba(61, 40, 23, 0.95)
+        );
+        color: white;
+        text-align: center;
+        padding: 60px 40px 30px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        margin-top: 80px;
+      }
+
+      footer h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 2em;
+        color: #ff6600;
+        margin-bottom: 20px;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 30px 0;
+      }
+
+      .social-links a {
+        color: white;
+        font-size: 2em;
+        transition: all 0.3s;
+      }
+
+      .social-links a:hover {
+        color: #ff6600;
+        transform: scale(1.2);
+      }
+
+      /* WhatsApp */
+      .whatsapp-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        color: white;
+        box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5);
+        z-index: 1000;
+        text-decoration: none;
+        animation: bounce 2s infinite;
+      }
+
+      .whatsapp-float:hover {
+        transform: scale(1.1);
+        color: white;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
         }
-        
-        .navbar-brand {
-            font-weight: 900;
-            font-size: 1.6rem;
-            color: var(--beer-amber) !important;
-            letter-spacing: -0.5px;
+        50% {
+          transform: translateY(-15px);
         }
-        
-        .nav-link {
-            color: var(--beer-dark) !important;
-            font-weight: 600;
-            margin: 0 1rem;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            position: relative;
+      }
+
+      /* Alerts */
+      .alert {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .nav-container {
+          flex-wrap: wrap;
+          padding: 0 15px;
         }
-        
-        .nav-link:hover {
-            color: var(--beer-amber) !important;
+
+        .logo {
+          font-size: 1.5rem;
         }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: var(--beer-amber);
-            transition: width 0.3s ease;
+
+        .nav-buttons {
+          width: 100%;
+          justify-content: center;
+          margin-top: 10px;
         }
-        
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 100%;
+
+        .btn-custom {
+          padding: 8px 18px;
+          font-size: 0.85rem;
         }
-        
-        /* Hero Section */
-        .hero-beer {
-            background: linear-gradient(135deg, var(--beer-dark) 0%, var(--beer-brown) 100%);
-            min-height: 70vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-beer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23F5A623" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom center no-repeat;
-            background-size: cover;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 900;
-            color: white;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: var(--beer-gold);
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-        
-        /* Botones estilo craft beer */
-        .btn-beer {
-            background: var(--beer-amber);
-            color: white;
-            font-weight: 700;
-            padding: 15px 40px;
-            border-radius: 50px;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-        
-        .btn-beer:hover {
-            background: var(--beer-gold);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(245, 166, 35, 0.4);
-            color: white;
-        }
-        
-        .btn-beer-outline {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-        
-        .btn-beer-outline:hover {
-            background: white;
-            color: var(--beer-dark);
-        }
-        
-        /* Cards estilo cervecería */
-        .card-beer {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            background: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-        
-        .card-beer:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        
-        /* Footer */
-        .footer-beer {
-            background: var(--beer-dark);
-            color: var(--beer-cream);
-            padding: 3rem 0 1.5rem;
-            margin-top: 5rem;
-        }
-        
-        .footer-beer h5 {
-            color: var(--beer-amber);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-        
-        .footer-beer a {
-            color: var(--beer-cream);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-beer a:hover {
-            color: var(--beer-amber);
-        }
-        
-        /* Sección stats */
-        .stats-beer {
-            background: white;
-            padding: 3rem 0;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--beer-amber);
-            line-height: 1;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            color: var(--beer-brown);
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-top: 0.5rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .nav-link {
-                margin: 0.5rem 0;
-            }
-        }
+      }
     </style>
-    
+
     {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-beer me-2"></i>CHOCOBREW
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
-                            Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'proyecto' %}active{% endif %}" href="{{ url_for('proyecto') }}">
-                            Proyecto
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'equipo' %}active{% endif %}" href="{{ url_for('equipo') }}">
-                            Equipo
-                        </a>
-                    </li>
-                    {% if user_logged_in %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'analisis' %}active{% endif %}" href="{{ url_for('analisis') }}">
-                            Nuevo Lote
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'mis_lotes' %}active{% endif %}" href="{{ url_for('mis_lotes') }}">
-                            Mis Lotes
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i>{{ user_name }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ url_for('mis_lotes') }}">
-                                <i class="fas fa-boxes me-2"></i>Mis Lotes
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
-                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                            </a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
+  </head>
+  <body>
+    <!-- Partículas -->
+    <div class="particles" id="particles"></div>
+
+    <!-- ==========================================
+         NAVBAR SIMPLIFICADO
+         ========================================== -->
+    <nav class="chocobrew-navbar">
+      <div class="nav-container">
+        <!-- Logo -->
+        <a href="{{ url_for('index') }}" class="logo">
+          <i class="fas fa-mug-hot"></i> CHOCOBREW
+        </a>
+
+        <!-- Botones de navegación -->
+        <div class="nav-buttons">
+          <!-- Botón INICIO - Siempre visible -->
+          <a href="{{ url_for('index') }}" class="btn-custom btn-home">
+            <i class="fas fa-home"></i> Inicio
+          </a>
+
+          {% if user_logged_in %}
+          <!-- Usuario CON sesión -->
+          <a href="{{ url_for('analisis') }}" class="btn-custom btn-new-batch">
+            <i class="fas fa-plus-circle"></i> Nuevo Lote
+          </a>
+          <a
+            href="{{ url_for('mis_lotes') }}"
+            class="btn-custom btn-my-batches"
+          >
+            <i class="fas fa-boxes"></i> Mis Lotes
+          </a>
+
+          <!-- Menú de usuario -->
+          <div class="user-menu dropdown">
+            <div class="user-button dropdown-toggle" data-bs-toggle="dropdown">
+              <div class="user-avatar">
+                {{ user_name[0]|upper if user_name else 'U' }}
+              </div>
+              <span class="d-none d-md-inline">{{ user_name }}</span>
             </div>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" href="{{ url_for('index') }}">
+                  <i class="fas fa-home"></i> Inicio
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{{ url_for('analisis') }}">
+                  <i class="fas fa-plus-circle"></i> Crear Lote
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{{ url_for('mis_lotes') }}">
+                  <i class="fas fa-boxes"></i> Mis Lotes
+                </a>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+              </li>
+            </ul>
+          </div>
+          {% else %}
+          <!-- Usuario SIN sesión -->
+          <a href="{{ url_for('login') }}" class="btn-custom btn-login">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+          </a>
+          <a href="{{ url_for('register') }}" class="btn-custom btn-register">
+            <i class="fas fa-user-plus"></i> Registrarse
+          </a>
+          {% endif %}
         </div>
+      </div>
     </nav>
-    
+
     <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="container mt-4">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="container mt-4" style="position: relative; z-index: 100">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        <i
+          class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"
+        ></i>
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
     <!-- Main Content -->
-    {% block content %}{% endblock %}
-    
+    <div class="main-content">{% block content %}{% endblock %}</div>
+
     <!-- Footer -->
-    <footer class="footer-beer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5><i class="fas fa-beer me-2"></i>CHOCOBREW</h5>
-                    <p>Proyecto de colaboración internacional en Machine Learning aplicado a cerveza artesanal de cacao ecuatoriano.</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Universidades</h5>
-                    <p class="mb-1"><i class="fas fa-university me-2"></i>Universidad de Cundinamarca, Colombia</p>
-                    <p><i class="fas fa-university me-2"></i>Universidad de Ecuador</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h5>Enlaces</h5>
-                    <p><a href="{{ url_for('proyecto') }}"><i class="fas fa-flask me-2"></i>Sobre el Proyecto</a></p>
-                    <p><a href="{{ url_for('equipo') }}"><i class="fas fa-users me-2"></i>Nuestro Equipo</a></p>
-                    {% if user_logged_in %}
-                    <p><a href="{{ url_for('analisis') }}"><i class="fas fa-qrcode me-2"></i>Nuevo Lote</a></p>
-                    <p><a href="{{ url_for('mis_lotes') }}"><i class="fas fa-boxes me-2"></i>Mis Lotes</a></p>
-                    {% endif %}
-                </div>
-            </div>
-            <hr style="border-color: var(--beer-gold); opacity: 0.3;">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2025 CHOCOBREW | Proyecto Aulas Espejo | Sistema de Análisis ML</p>
-            </div>
+    <footer>
+      <div class="footer-content">
+        <h3><i class="fas fa-mug-hot me-2"></i>CHOCOBREW</h3>
+        <p style="font-size: 1.1em; margin-bottom: 30px">
+          Cerveza artesanal con cacao ecuatoriano premium
+        </p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
         </div>
+        <p style="margin-top: 30px; opacity: 0.8">
+          © 2025 CHOCOBREW - Todos los derechos reservados
+        </p>
+        <p style="margin-top: 10px; opacity: 0.7">
+          Hecho con <i class="fas fa-heart" style="color: #ff6600"></i> en
+          Ecuador
+        </p>
+      </div>
     </footer>
-    
-    <!-- Bootstrap JS -->
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/593993913964" class="whatsapp-float" target="_blank">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Crear partículas
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.animationDelay = Math.random() * 15 + 's';
+          particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+          particlesContainer.appendChild(particle);
+      }
+
+      // Debug: Verificar si user_logged_in está definido
+      console.log('Usuario logueado:', {{ 'true' if user_logged_in else 'false' }});
+      console.log('Nombre usuario:', '{{ user_name }}');
+    </script>
+
     {% block extra_js %}{% endblock %}
-</body>
+  </body>
 </html>
