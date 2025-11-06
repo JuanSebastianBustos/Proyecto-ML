@@ -39,30 +39,36 @@ except ImportError:
     QR_AVAILABLE = False
     logger.warning("qrcode no disponible. Instala: pip install qrcode[pil]")
 
-# Configuración MySQL
+# Configuración PostgreSQL para Neon.tech
 try:
-    import mysql.connector
-    from mysql.connector import Error
-    
-    DB_CONFIG = {
-        'host': 'localhost',
-        'user': 'root',
-        'password': '',
-        'database': 'beer_predictor_db'
-    }
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    from psycopg2 import Error
     
     def get_db_connection():
         try:
-            connection = mysql.connector.connect(**DB_CONFIG)
+            # Usar DATABASE_URL de las variables de entorno (Render)
+            database_url = os.environ.get('DATABASE_URL')
+            if database_url:
+                connection = psycopg2.connect(database_url, cursor_factory=RealDictCursor)
+            else:
+                # Fallback para desarrollo local
+                connection = psycopg2.connect(
+                    host=os.environ.get('PGHOST', 'localhost'),
+                    database=os.environ.get('PGDATABASE', 'beer_predictor_db'),
+                    user=os.environ.get('PGUSER', 'postgres'),
+                    password=os.environ.get('PGPASSWORD', ''),
+                    port=os.environ.get('PGPORT', 5432),
+                    cursor_factory=RealDictCursor
+                )
             return connection
         except Error as e:
-            logger.error(f"Error conectando a MySQL: {e}")
+            logger.error(f"Error conectando a PostgreSQL: {e}")
             return None
     
-    logger.info("Módulo MySQL disponible")
+    logger.info("Módulo PostgreSQL disponible")
 except ImportError:
-    logger.warning("MySQL connector no disponible. Instala: pip install mysql-connector-python")
-    DB_CONFIG = None
+    logger.warning("psycopg2 no disponible. Instala: pip install psycopg2-binary")
     def get_db_connection():
         return None
 
@@ -123,8 +129,15 @@ def generar_codigo_qr(lote_id):
     if not QR_AVAILABLE:
         return None
     
-    ip_local = obtener_ip_local()
-    url_lote = f"http://{ip_local}:5000/lote-publico/{lote_id}"
+    # En producción, usar la URL real de Render
+    if os.environ.get('RENDER'):
+        # En Render, usar la URL del deploy
+        base_url = os.environ.get('RENDER_EXTERNAL_URL', f"http://{obtener_ip_local()}:5000")
+    else:
+        # En desarrollo local
+        base_url = f"http://{obtener_ip_local()}:5000"
+    
+    url_lote = f"{base_url}/lote-publico/{lote_id}"
     
     logger.info(f"Generando QR con URL: {url_lote}")
     
@@ -147,7 +160,7 @@ def generar_codigo_qr(lote_id):
     return img_base64
 
 def guardar_lote_en_bd(datos_lote, user_id):
-    """Guarda el lote completo en MySQL"""
+    """Guarda el lote completo en PostgreSQL"""
     connection = get_db_connection()
     if not connection:
         logger.warning("No se pudo conectar a la base de datos")
@@ -166,7 +179,7 @@ def guardar_lote_en_bd(datos_lote, user_id):
         ) VALUES (
             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-        )
+        ) RETURNING id
         """
         
         valores = (
@@ -195,7 +208,7 @@ def guardar_lote_en_bd(datos_lote, user_id):
         cursor.execute(query, valores)
         connection.commit()
         
-        lote_id = cursor.lastrowid
+        lote_id = cursor.fetchone()['id']
         logger.info(f"Lote guardado en BD con ID: {lote_id}")
         
         return lote_id
@@ -248,7 +261,7 @@ def login():
         connection = get_db_connection()
         if connection:
             try:
-                cursor = connection.cursor(dictionary=True)
+                cursor = connection.cursor()
                 cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email,))
                 user = cursor.fetchone()
                 
@@ -309,7 +322,7 @@ def register():
                 
                 hashed_password = generate_password_hash(password)
                 cursor.execute(
-                    "INSERT INTO usuarios (nombre, email, password) VALUES (%s, %s, %s)",
+                    "INSERT INTO usuarios (nombre, email, password) VALUES (%s, %s, %s) RETURNING id",
                     (nombre, email, hashed_password)
                 )
                 connection.commit()
@@ -353,7 +366,7 @@ def lote_publico(lote_id):
                              error_code=500), 500
     
     try:
-        cursor = connection.cursor(dictionary=True)
+        cursor = connection.cursor()
         cursor.execute("""
             SELECT * FROM lotes_chocobrew 
             WHERE id = %s
@@ -556,7 +569,7 @@ def mis_lotes():
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor()
             cursor.execute("""
                 SELECT * FROM lotes_chocobrew 
                 WHERE user_id = %s 
@@ -593,7 +606,7 @@ def ver_lote(lote_id):
     
     if connection:
         try:
-            cursor = connection.cursor(dictionary=True)
+            cursor = connection.cursor()
             cursor.execute("""
                 SELECT * FROM lotes_chocobrew 
                 WHERE id = %s AND user_id = %s
@@ -669,18 +682,23 @@ if __name__ == '__main__':
     
     connection = get_db_connection()
     if connection:
-        logger.info("✓ Conexión a MySQL exitosa")
+        logger.info("✓ Conexión a PostgreSQL exitosa")
         connection.close()
     else:
-        logger.warning("⚠ No se pudo conectar a MySQL. Verifica la configuración.")
+        logger.warning("⚠ No se pudo conectar a PostgreSQL. Verifica la configuración.")
+    
+    # Configuración para Render
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     
     ip_local = obtener_ip_local()
     logger.info(f"Iniciando aplicación CHOCOBREW v{PROJECT_INFO['version']}")
-    logger.info(f"")
-    logger.info(f"🌐 Accede desde tu PC: http://localhost:5000")
-    logger.info(f"📱 Accede desde tu celular: http://{ip_local}:5000")
-    logger.info(f"")
-    logger.info(f"⚠️  Asegúrate de que tu celular esté en la misma red WiFi")
-    logger.info(f"")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    if os.environ.get('RENDER'):
+        logger.info(f"🚀 Aplicación desplegada en Render - Puerto: {port}")
+        app.run(debug=debug_mode, host='0.0.0.0', port=port)
+    else:
+        logger.info(f"🌐 Accede desde tu PC: http://localhost:5000")
+        logger.info(f"📱 Accede desde tu celular: http://{ip_local}:5000")
+        logger.info(f"⚠️  Asegúrate de que tu celular esté en la misma red WiFi")
+        app.run(debug=True, host='0.0.0.0', port=5000)
