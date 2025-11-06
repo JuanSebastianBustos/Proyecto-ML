@@ -1,100 +1,534 @@
 {% extends "base.html" %}
 
-{% block title %}Registro - Beer Hazy Predictor{% endblock %}
+{% block title %}Crear Cuenta - CHOCOBREW{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Reutilizar estilos del login */
+    .login-hero {
+        background: linear-gradient(135deg, rgba(26,15,8,0.95) 0%, rgba(61,40,23,0.95) 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 40px 0;
+    }
+    
+    .login-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%238B4513" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom center no-repeat;
+        background-size: cover;
+        animation: wave 10s ease-in-out infinite;
+    }
+    
+    @keyframes wave {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(-25px) translateY(-10px); }
+    }
+    
+    .login-container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 520px;
+        padding: 20px;
+        animation: slideUpFade 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes slideUpFade {
+        from {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 45px 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        border: 1px solid rgba(139,69,19,0.2);
+        transition: all 0.4s ease;
+    }
+    
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    
+    .login-logo {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(135deg, #ff6600, #ffaa00);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 30px rgba(255,102,0,0.4);
+        animation: logoPulse 3s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-logo::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+        transform: rotate(45deg);
+        animation: shine 3s infinite;
+    }
+    
+    @keyframes logoPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    @keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .login-logo i {
+        font-size: 2.5rem;
+        color: white;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .login-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-weight: 900;
+        color: #3E2723;
+        margin-bottom: 8px;
+        text-align: center;
+        background: linear-gradient(45deg, #8B4513, #A0522D);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .login-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        color: #666;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+        animation: fadeInUp 0.6s ease-out both;
+        animation-delay: calc(var(--i) * 0.08s);
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #3E2723;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .form-label i {
+        color: #ff6600;
+    }
+    
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+    
+    .form-control:focus {
+        border-color: #ff6600;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255,102,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .form-control::placeholder {
+        color: #bbb;
+    }
+    
+    .input-group {
+        position: relative;
+    }
+    
+    .input-group .form-control {
+        padding-right: 45px;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #8B4513;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        font-size: 1.1rem;
+    }
+    
+    .toggle-password:hover {
+        color: #ff6600;
+        transform: translateY(-50%) scale(1.2);
+    }
+    
+    /* Indicador de fortaleza de contraseña */
+    .password-strength {
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 2px;
+        margin-top: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .password-strength-bar {
+        height: 100%;
+        width: 0;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+    
+    .password-strength-bar.weak {
+        width: 33%;
+        background: #dc3545;
+    }
+    
+    .password-strength-bar.medium {
+        width: 66%;
+        background: #ffc107;
+    }
+    
+    .password-strength-bar.strong {
+        width: 100%;
+        background: #28a745;
+    }
+    
+    .password-match {
+        font-size: 0.85rem;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .password-match.show {
+        opacity: 1;
+    }
+    
+    .password-match.success {
+        color: #28a745;
+    }
+    
+    .password-match.error {
+        color: #dc3545;
+    }
+    
+    .btn-register {
+        background: linear-gradient(135deg, #ff6600, #ff8533, #ffaa00);
+        background-size: 200% auto;
+        color: white;
+        font-weight: 700;
+        padding: 15px 40px;
+        border-radius: 50px;
+        border: none;
+        width: 100%;
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 25px rgba(255,102,0,0.3);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+    
+    .btn-register:hover::before {
+        left: 100%;
+    }
+    
+    .btn-register:hover {
+        background-position: right center;
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(255,102,0,0.5);
+    }
+    
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0;
+        color: #999;
+        font-size: 0.9rem;
+    }
+    
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .divider span {
+        padding: 0 15px;
+    }
+    
+    .btn-login-link {
+        background: white;
+        color: #8B4513;
+        font-weight: 600;
+        padding: 13px 40px;
+        border-radius: 50px;
+        border: 2px solid #8B4513;
+        width: 100%;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-login-link:hover {
+        background: #8B4513;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(139,69,19,0.3);
+    }
+    
+    .back-link {
+        text-align: center;
+        margin-top: 25px;
+    }
+    
+    .back-link a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .back-link a:hover {
+        color: #ffaa00;
+        transform: translateX(-5px);
+    }
+    
+    .requirements-list {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 8px;
+        padding-left: 20px;
+    }
+    
+    .requirements-list li {
+        margin-bottom: 4px;
+    }
+    
+    @media (max-width: 576px) {
+        .login-card {
+            padding: 35px 25px;
+        }
+        
+        .login-title {
+            font-size: 1.7rem;
+        }
+        
+        .form-control {
+            padding: 11px 14px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<section class="py-5" style="min-height: 100vh; background: linear-gradient(135deg, var(--beer-dark) 0%, var(--beer-brown) 100%); display: flex; align-items: center;">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-7">
-                <div class="card-beer p-5 shadow-lg">
-                    <!-- Logo/Icono -->
-                    <div class="text-center mb-4">
-                        <div class="mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--beer-amber), var(--beer-gold)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-user-plus" style="font-size: 2.5rem; color: white;"></i>
-                        </div>
-                        <h2 class="fw-bold mb-2" style="color: var(--beer-dark);">Crear Cuenta</h2>
-                        <p class="text-muted">Únete a Beer Hazy Predictor</p>
-                    </div>
-
-                    <!-- Formulario -->
-                    <form method="POST" action="{{ url_for('register') }}" id="registerForm">
-                        <!-- Nombre -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-user text-warning me-2"></i>
-                                Nombre Completo
-                            </label>
-                            <input type="text" class="form-control form-control-lg" name="nombre" 
-                                   placeholder="Juan Pérez" required autofocus>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-envelope text-warning me-2"></i>
-                                Correo Electrónico
-                            </label>
-                            <input type="email" class="form-control form-control-lg" name="email" 
-                                   placeholder="tu@email.com" required>
-                        </div>
-
-                        <!-- Password -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-lock text-warning me-2"></i>
-                                Contraseña
-                            </label>
-                            <div class="input-group">
-                                <input type="password" class="form-control form-control-lg" name="password" 
-                                       id="password" placeholder="Mínimo 6 caracteres" required minlength="6">
-                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <small class="text-muted">Mínimo 6 caracteres</small>
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-lock text-warning me-2"></i>
-                                Confirmar Contraseña
-                            </label>
-                            <div class="input-group">
-                                <input type="password" class="form-control form-control-lg" name="confirm_password" 
-                                       id="confirm_password" placeholder="Repite tu contraseña" required>
-                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <small id="passwordMatch" class="text-muted"></small>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-beer w-100 btn-lg mb-3">
-                            <i class="fas fa-user-check me-2"></i>Crear Cuenta
-                        </button>
-
-                        <!-- Divider -->
-                        <div class="text-center my-4">
-                            <span class="text-muted">¿Ya tienes cuenta?</span>
-                        </div>
-
-                        <!-- Login Link -->
-                        <a href="{{ url_for('login') }}" class="btn btn-outline-secondary w-100">
-                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
-                        </a>
-                    </form>
-                </div>
-
-                <!-- Back to Home -->
-                <div class="text-center mt-4">
-                    <a href="{{ url_for('index') }}" class="text-white text-decoration-none">
-                        <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
-                    </a>
-                </div>
+<section class="login-hero">
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo -->
+            <div class="login-logo">
+                <i class="fas fa-user-plus"></i>
             </div>
+            
+            <!-- Títulos -->
+            <h2 class="login-title">Crear Cuenta</h2>
+            <p class="login-subtitle">Únete a la familia CHOCOBREW</p>
+            
+            <!-- Formulario -->
+            <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                <!-- Nombre -->
+                <div class="form-group" style="--i:1">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i>
+                        Nombre Completo
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        name="nombre" 
+                        placeholder="Juan Pérez" 
+                        required 
+                        autofocus
+                        minlength="3"
+                        autocomplete="name"
+                    >
+                </div>
+
+                <!-- Email -->
+                <div class="form-group" style="--i:2">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Correo Electrónico
+                    </label>
+                    <input 
+                        type="email" 
+                        class="form-control" 
+                        name="email" 
+                        id="email"
+                        placeholder="tu@email.com" 
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group" style="--i:3">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Contraseña
+                    </label>
+                    <div class="input-group">
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            name="password" 
+                            id="password" 
+                            placeholder="Mínimo 6 caracteres" 
+                            required
+                            minlength="6"
+                            autocomplete="new-password"
+                        >
+                        <button 
+                            class="toggle-password" 
+                            type="button" 
+                            id="togglePassword"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="strengthBar"></div>
+                    </div>
+                    <small class="text-muted">Mínimo 6 caracteres</small>
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="form-group" style="--i:4">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Confirmar Contraseña
+                    </label>
+                    <div class="input-group">
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            name="confirm_password" 
+                            id="confirm_password" 
+                            placeholder="Repite tu contraseña" 
+                            required
+                            autocomplete="new-password"
+                        >
+                        <button 
+                            class="toggle-password" 
+                            type="button" 
+                            id="toggleConfirmPassword"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-match" id="passwordMatch"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-register" id="submitBtn" style="--i:5">
+                    <i class="fas fa-user-check me-2"></i>Crear Cuenta
+                </button>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span>¿Ya tienes cuenta?</span>
+                </div>
+
+                <!-- Login Link -->
+                <a href="{{ url_for('login') }}" class="btn-login-link">
+                    <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                </a>
+            </form>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Inicio
+            </a>
         </div>
     </div>
 </section>
@@ -103,67 +537,114 @@
 {% block extra_js %}
 <script>
     // Toggle password visibility
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        const password = document.getElementById('password');
-        const icon = this.querySelector('i');
+    function setupPasswordToggle(buttonId, inputId) {
+        const button = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
         
-        if (password.type === 'password') {
-            password.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            password.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    });
-
-    document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
-        const password = document.getElementById('confirm_password');
-        const icon = this.querySelector('i');
-        
-        if (password.type === 'password') {
-            password.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            password.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    });
-
-    // Verificar que las contraseñas coincidan
+        button.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    }
+    
+    setupPasswordToggle('togglePassword', 'password');
+    setupPasswordToggle('toggleConfirmPassword', 'confirm_password');
+    
+    // Password strength indicator
     const password = document.getElementById('password');
+    const strengthBar = document.getElementById('strengthBar');
+    
+    password.addEventListener('input', function() {
+        const value = this.value;
+        let strength = 0;
+        
+        if (value.length >= 6) strength++;
+        if (value.length >= 10) strength++;
+        if (/[A-Z]/.test(value)) strength++;
+        if (/[0-9]/.test(value)) strength++;
+        if (/[^A-Za-z0-9]/.test(value)) strength++;
+        
+        strengthBar.className = 'password-strength-bar';
+        
+        if (strength <= 2) {
+            strengthBar.classList.add('weak');
+        } else if (strength <= 4) {
+            strengthBar.classList.add('medium');
+        } else {
+            strengthBar.classList.add('strong');
+        }
+    });
+    
+    // Password match checker
     const confirmPassword = document.getElementById('confirm_password');
     const matchMessage = document.getElementById('passwordMatch');
-
+    
     function checkPasswordMatch() {
         if (confirmPassword.value === '') {
-            matchMessage.textContent = '';
-            matchMessage.className = 'text-muted';
+            matchMessage.classList.remove('show');
             return;
         }
         
+        matchMessage.classList.add('show');
+        
         if (password.value === confirmPassword.value) {
-            matchMessage.textContent = '✓ Las contraseñas coinciden';
-            matchMessage.className = 'text-success';
+            matchMessage.className = 'password-match show success';
+            matchMessage.innerHTML = '<i class="fas fa-check-circle"></i> Las contraseñas coinciden';
         } else {
-            matchMessage.textContent = '✗ Las contraseñas no coinciden';
-            matchMessage.className = 'text-danger';
+            matchMessage.className = 'password-match show error';
+            matchMessage.innerHTML = '<i class="fas fa-times-circle"></i> Las contraseñas no coinciden';
         }
     }
-
+    
     password.addEventListener('input', checkPasswordMatch);
     confirmPassword.addEventListener('input', checkPasswordMatch);
-
-    // Validación del formulario
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
+    
+    // Form validation
+    const registerForm = document.getElementById('registerForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    registerForm.addEventListener('submit', function(e) {
         if (password.value !== confirmPassword.value) {
             e.preventDefault();
             alert('Las contraseñas no coinciden');
             confirmPassword.focus();
+            return;
         }
+        
+        if (password.value.length < 6) {
+            e.preventDefault();
+            alert('La contraseña debe tener mínimo 6 caracteres');
+            password.focus();
+            return;
+        }
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creando cuenta...';
+        submitBtn.style.pointerEvents = 'none';
+    });
+    
+    // Email validation
+    const emailInput = document.getElementById('email');
+    
+    emailInput.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value && !emailRegex.test(this.value)) {
+            this.style.borderColor = '#dc3545';
+        } else {
+            this.style.borderColor = '#e0e0e0';
+        }
+    });
+    
+    emailInput.addEventListener('input', function() {
+        this.style.borderColor = '#e0e0e0';
     });
 </script>
 {% endblock %}

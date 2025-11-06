@@ -4,262 +4,761 @@
 
 {% block extra_css %}
 <style>
-    .form-range::-webkit-slider-thumb {
-        background: #8B4513;
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(26,15,8,0.95) 0%, rgba(61,40,23,0.95) 100%);
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 80px 0;
     }
     
-    .form-range::-moz-range-thumb {
-        background: #8B4513;
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%238B4513" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') bottom center no-repeat;
+        background-size: cover;
+        animation: wave 10s ease-in-out infinite;
     }
     
-    .range-value {
-        display: inline-block;
-        width: 70px;
+    @keyframes wave {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(-25px) translateY(-10px); }
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
         text-align: center;
-        font-weight: 700;
-        color: #8B4513;
-        font-size: 1.2rem;
-    }
-    
-    .cacao-theme {
-        background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
-    }
-    
-    .btn-cacao {
-        background: #8B4513;
         color: white;
+    }
+    
+    .hero-icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        animation: float 3s ease-in-out infinite;
+        color: #ffaa00;
+        text-shadow: 0 5px 15px rgba(255,170,0,0.5);
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+        opacity: 0.9;
+    }
+    
+    /* Form Section */
+    .form-section {
+        padding: 80px 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .form-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 50px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        border: 1px solid rgba(139,69,19,0.2);
+        animation: slideUp 0.8s ease-out;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .form-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: #3E2723;
+        margin-bottom: 10px;
+    }
+    
+    .form-description {
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 30px;
+        animation: fadeInUp 0.6s ease-out both;
+        animation-delay: calc(var(--i) * 0.05s);
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .form-label {
         font-weight: 700;
-        padding: 15px 40px;
-        border-radius: 50px;
-        border: none;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        color: #3E2723;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+    }
+    
+    .form-label i {
+        font-size: 1.3rem;
+    }
+    
+    .form-label .text-danger { color: #dc3545; }
+    .form-label .text-success { color: #28a745; }
+    .form-label .text-info { color: #17a2b8; }
+    .form-label .text-primary { color: #007bff; }
+    .form-label .text-warning { color: #ffc107; }
+    .form-label .text-chocolate { color: #8B4513; }
+    
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+    
+    .form-control:focus {
+        border-color: #ff6600;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(255,102,0,0.1);
+        outline: none;
+    }
+    
+    /* Range Slider Mejorado */
+    .range-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .form-range {
+        flex: 1;
+        height: 8px;
+        border-radius: 5px;
+        background: linear-gradient(to right, #e0e0e0 0%, #e0e0e0 100%);
+        outline: none;
         transition: all 0.3s ease;
     }
     
-    .btn-cacao:hover {
-        background: #A0522D;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(139, 69, 19, 0.4);
+    .form-range::-webkit-slider-thumb {
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6600, #ffaa00);
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(255,102,0,0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .form-range::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 6px 16px rgba(255,102,0,0.6);
+    }
+    
+    .form-range::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6600, #ffaa00);
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 4px 12px rgba(255,102,0,0.4);
+    }
+    
+    .range-value {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 90px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #8B4513, #A0522D);
         color: white;
+        font-weight: 900;
+        font-size: 1.3rem;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(139,69,19,0.3);
+        font-family: 'Playfair Display', serif;
+    }
+    
+    .helper-text {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .helper-text i {
+        color: #ffc107;
+        font-size: 0.9rem;
+    }
+    
+    /* Section Divider */
+    .section-divider {
+        border: none;
+        height: 2px;
+        background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+        margin: 40px 0;
+    }
+    
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #3E2723;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .section-title::before {
+        content: '';
+        width: 50px;
+        height: 4px;
+        background: linear-gradient(to right, #ff6600, #ffaa00);
+        border-radius: 2px;
+    }
+    
+    /* Submit Button */
+    .submit-container {
+        text-align: center;
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #ff6600, #ff8533, #ffaa00);
+        background-size: 200% auto;
+        color: white;
+        font-weight: 900;
+        padding: 20px 60px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.4s ease;
+        box-shadow: 0 15px 35px rgba(255,102,0,0.4);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        font-family: 'Playfair Display', serif;
+    }
+    
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-submit:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .btn-submit:hover {
+        background-position: right center;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 45px rgba(255,102,0,0.6);
+    }
+    
+    .btn-submit:active {
+        transform: translateY(-2px);
+    }
+    
+    /* Info Section */
+    .info-section {
+        padding: 80px 0;
+        background: rgba(245, 245, 220, 0.3);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .info-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        animation: fadeIn 1s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .info-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #3E2723;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .info-title i {
+        color: #8B4513;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+    }
+    
+    .info-item {
+        text-align: center;
+        padding: 25px;
+        background: #fafafa;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .info-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        background: white;
+    }
+    
+    .info-item i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+    
+    .info-item h6 {
+        font-weight: 700;
+        color: #3E2723;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+    }
+    
+    .info-item p {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-icon {
+            font-size: 3.5rem;
+        }
+        
+        .form-card {
+            padding: 30px 20px;
+        }
+        
+        .form-title {
+            font-size: 1.8rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+        
+        .btn-submit {
+            padding: 18px 40px;
+            font-size: 1rem;
+        }
+        
+        .range-value {
+            min-width: 70px;
+            font-size: 1.1rem;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="cacao-theme" style="min-height: 40vh; display: flex; align-items: center;">
+<section class="hero-section">
     <div class="container">
-        <div class="text-center text-white">
-            <i class="fas fa-mug-hot" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h1 class="display-4 fw-bold">Análisis de Lote</h1>
-            <p class="lead">CHOCOBREW - Cerveza Artesanal de Cacao</p>
+        <div class="hero-content">
+            <i class="fas fa-mug-hot hero-icon"></i>
+            <h1 class="hero-title">Análisis de Lote</h1>
+            <p class="hero-subtitle">CHOCOBREW - Cerveza Artesanal de Cacao</p>
         </div>
     </div>
 </section>
 
-<!-- Formulario -->
-<section class="py-5">
+<!-- Form Section -->
+<section class="form-section">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-5">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold mb-3" style="color: #3E2723;">Registro de Nuevo Lote</h2>
-                        <p class="text-muted">Completa la información para generar el código QR y predicción de calidad</p>
-                    </div>
-                    
-                    <form action="{{ url_for('procesar_lote') }}" method="POST" id="loteForm">
-                        <!-- Información del Lote -->
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-barcode text-warning me-2"></i>
+        <div class="form-container">
+            <div class="form-card">
+                <!-- Header -->
+                <div class="form-header">
+                    <h2 class="form-title">Registro de Nuevo Lote</h2>
+                    <p class="form-description">Completa la información para generar el código QR y predicción de calidad</p>
+                </div>
+                
+                <!-- Formulario -->
+                <form action="{{ url_for('procesar_lote') }}" method="POST" id="loteForm">
+                    <!-- Información del Lote -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="--i:1">
+                                <label class="form-label">
+                                    <i class="fas fa-barcode text-warning"></i>
                                     Código de Lote *
                                 </label>
-                                <input type="text" class="form-control form-control-lg" name="codigo_lote" 
-                                       placeholder="Ej: CHOCO-2025-001" required>
-                                <small class="text-muted">Identificador único del lote</small>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name="codigo_lote" 
+                                    placeholder="Ej: CHOCO-2025-001" 
+                                    required
+                                >
+                                <small class="helper-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Identificador único del lote
+                                </small>
                             </div>
-                            
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">
-                                    <i class="fas fa-calendar text-warning me-2"></i>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group" style="--i:2">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar text-warning"></i>
                                     Fecha de Elaboración *
                                 </label>
-                                <input type="date" class="form-control form-control-lg" name="fecha_elaboracion" 
-                                       max="{{ current_year }}-12-31" required>
-                                <small class="text-muted">Fecha de embotellado</small>
+                                <input 
+                                    type="date" 
+                                    class="form-control" 
+                                    name="fecha_elaboracion" 
+                                    max="{{ current_year }}-12-31" 
+                                    required
+                                >
+                                <small class="helper-text">
+                                    <i class="fas fa-info-circle"></i>
+                                    Fecha de embotellado
+                                </small>
                             </div>
                         </div>
+                    </div>
 
-                        <hr class="my-4">
-                        <h4 class="fw-bold mb-3" style="color: #3E2723;">Características de la Cerveza</h4>
+                    <hr class="section-divider">
+                    <h4 class="section-title">Características de la Cerveza</h4>
 
-                        <!-- ABV -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-percentage text-danger me-2"></i>
-                                ABV - Alcohol por Volumen
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="abv" name="abv" 
-                                       min="4" max="10" step="0.1" value="6.5" oninput="updateValue('abv')">
-                                <span class="range-value" id="abv-value">6.5%</span>
-                            </div>
-                            <small class="text-muted">Típico para cerveza artesanal: 5.5% - 8.0%</small>
+                    <!-- ABV -->
+                    <div class="form-group" style="--i:3">
+                        <label class="form-label">
+                            <i class="fas fa-percentage text-danger"></i>
+                            ABV - Alcohol por Volumen
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="abv" 
+                                name="abv" 
+                                min="4" 
+                                max="10" 
+                                step="0.1" 
+                                value="6.5" 
+                                oninput="updateValue('abv')"
+                            >
+                            <span class="range-value" id="abv-value">6.5%</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Típico para cerveza artesanal: 5.5% - 8.0%
+                        </small>
+                    </div>
 
-                        <!-- IBU -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-leaf text-success me-2"></i>
-                                IBU - Unidades de Amargor
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="ibu" name="ibu" 
-                                       min="15" max="70" step="1" value="35" oninput="updateValue('ibu')">
-                                <span class="range-value" id="ibu-value">35</span>
-                            </div>
-                            <small class="text-muted">Rango típico: 25 - 50 IBU</small>
+                    <!-- IBU -->
+                    <div class="form-group" style="--i:4">
+                        <label class="form-label">
+                            <i class="fas fa-leaf text-success"></i>
+                            IBU - Unidades de Amargor
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="ibu" 
+                                name="ibu" 
+                                min="15" 
+                                max="70" 
+                                step="1" 
+                                value="35" 
+                                oninput="updateValue('ibu')"
+                            >
+                            <span class="range-value" id="ibu-value">35</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Rango típico: 25 - 50 IBU
+                        </small>
+                    </div>
 
-                        <!-- SRM -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-palette text-info me-2"></i>
-                                SRM - Color
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="srm" name="srm" 
-                                       min="10" max="40" step="1" value="20" oninput="updateValue('srm')">
-                                <span class="range-value" id="srm-value">20</span>
-                            </div>
-                            <small class="text-muted">Con cacao: 15 - 30 SRM (marrón oscuro)</small>
+                    <!-- SRM -->
+                    <div class="form-group" style="--i:5">
+                        <label class="form-label">
+                            <i class="fas fa-palette text-info"></i>
+                            SRM - Color
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="srm" 
+                                name="srm" 
+                                min="10" 
+                                max="40" 
+                                step="1" 
+                                value="20" 
+                                oninput="updateValue('srm')"
+                            >
+                            <span class="range-value" id="srm-value">20</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Con cacao: 15 - 30 SRM (marrón oscuro)
+                        </small>
+                    </div>
 
-                        <!-- Porcentaje de Cacao (NUEVO) -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-seedling" style="color: #8B4513;" class="me-2"></i>
-                                Porcentaje de Cacao Ecuatoriano
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="porcentaje_cacao" name="porcentaje_cacao" 
-                                       min="2" max="15" step="0.5" value="8" oninput="updateValue('porcentaje_cacao')">
-                                <span class="range-value" id="porcentaje_cacao-value">8.0%</span>
-                            </div>
-                            <small class="text-muted">Cacao fino de aroma - Característico de CHOCOBREW</small>
+                    <!-- Porcentaje de Cacao -->
+                    <div class="form-group" style="--i:6">
+                        <label class="form-label">
+                            <i class="fas fa-seedling text-chocolate"></i>
+                            Porcentaje de Cacao Ecuatoriano
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="porcentaje_cacao" 
+                                name="porcentaje_cacao" 
+                                min="2" 
+                                max="15" 
+                                step="0.5" 
+                                value="8" 
+                                oninput="updateValue('porcentaje_cacao')"
+                            >
+                            <span class="range-value" id="porcentaje_cacao-value">8.0%</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Cacao fino de aroma - Característico de CHOCOBREW
+                        </small>
+                    </div>
 
-                        <!-- OG -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-tint text-primary me-2"></i>
-                                OG - Densidad Inicial
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="og" name="og" 
-                                       min="1.045" max="1.080" step="0.001" value="1.060" oninput="updateValue('og')">
-                                <span class="range-value" id="og-value">1.060</span>
-                            </div>
-                            <small class="text-muted">Densidad antes de fermentar</small>
+                    <!-- OG -->
+                    <div class="form-group" style="--i:7">
+                        <label class="form-label">
+                            <i class="fas fa-tint text-primary"></i>
+                            OG - Densidad Inicial
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="og" 
+                                name="og" 
+                                min="1.045" 
+                                max="1.080" 
+                                step="0.001" 
+                                value="1.060" 
+                                oninput="updateValue('og')"
+                            >
+                            <span class="range-value" id="og-value">1.060</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Densidad antes de fermentar
+                        </small>
+                    </div>
 
-                        <!-- FG -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-flask text-secondary me-2"></i>
-                                FG - Densidad Final
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="fg" name="fg" 
-                                       min="1.008" max="1.020" step="0.001" value="1.012" oninput="updateValue('fg')">
-                                <span class="range-value" id="fg-value">1.012</span>
-                            </div>
-                            <small class="text-muted">Densidad después de fermentar</small>
+                    <!-- FG -->
+                    <div class="form-group" style="--i:8">
+                        <label class="form-label">
+                            <i class="fas fa-flask" style="color: #6c757d;"></i>
+                            FG - Densidad Final
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="fg" 
+                                name="fg" 
+                                min="1.008" 
+                                max="1.020" 
+                                step="0.001" 
+                                value="1.012" 
+                                oninput="updateValue('fg')"
+                            >
+                            <span class="range-value" id="fg-value">1.012</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Densidad después de fermentar
+                        </small>
+                    </div>
 
-                        <!-- Días de Fermentación -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-clock text-warning me-2"></i>
-                                Días de Fermentación
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="dias_fermentacion" name="dias_fermentacion" 
-                                       min="5" max="14" step="1" value="7" oninput="updateValue('dias_fermentacion')">
-                                <span class="range-value" id="dias_fermentacion-value">7</span>
-                            </div>
-                            <small class="text-muted">Típico: 7 días según tu proceso</small>
+                    <!-- Días de Fermentación -->
+                    <div class="form-group" style="--i:9">
+                        <label class="form-label">
+                            <i class="fas fa-clock text-warning"></i>
+                            Días de Fermentación
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="dias_fermentacion" 
+                                name="dias_fermentacion" 
+                                min="5" 
+                                max="14" 
+                                step="1" 
+                                value="7" 
+                                oninput="updateValue('dias_fermentacion')"
+                            >
+                            <span class="range-value" id="dias_fermentacion-value">7</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Típico: 7 días según tu proceso
+                        </small>
+                    </div>
 
-                        <!-- Días de Maduración -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">
-                                <i class="fas fa-hourglass-half text-info me-2"></i>
-                                Días de Maduración
-                            </label>
-                            <div class="d-flex align-items-center">
-                                <input type="range" class="form-range me-3" id="dias_maduracion" name="dias_maduracion" 
-                                       min="7" max="21" step="1" value="12" oninput="updateValue('dias_maduracion')">
-                                <span class="range-value" id="dias_maduracion-value">12</span>
-                            </div>
-                            <small class="text-muted">Típico: 10-15 días según tu proceso</small>
+                    <!-- Días de Maduración -->
+                    <div class="form-group" style="--i:10">
+                        <label class="form-label">
+                            <i class="fas fa-hourglass-half text-info"></i>
+                            Días de Maduración
+                        </label>
+                        <div class="range-container">
+                            <input 
+                                type="range" 
+                                class="form-range" 
+                                id="dias_maduracion" 
+                                name="dias_maduracion" 
+                                min="7" 
+                                max="21" 
+                                step="1" 
+                                value="12" 
+                                oninput="updateValue('dias_maduracion')"
+                            >
+                            <span class="range-value" id="dias_maduracion-value">12</span>
                         </div>
+                        <small class="helper-text">
+                            <i class="fas fa-lightbulb"></i>
+                            Típico: 10-15 días según tu proceso
+                        </small>
+                    </div>
 
-                        <!-- Submit Button -->
-                        <div class="text-center mt-5">
-                            <button type="submit" class="btn btn-cacao btn-lg px-5">
-                                <i class="fas fa-qrcode me-2"></i>Generar Análisis y Código QR
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Submit Button -->
+                    <div class="submit-container">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-qrcode me-2"></i>Generar Análisis y Código QR
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Info Section -->
-<section class="py-5 bg-light">
+<section class="info-section">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="card-beer p-4">
-                    <h4 class="fw-bold mb-4" style="color: #3E2723;">
-                        <i class="fas fa-info-circle me-2" style="color: #8B4513;"></i>
-                        ¿Qué se genera?
-                    </h4>
-                    <div class="row g-4">
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <i class="fas fa-qrcode" style="font-size: 3rem; color: #8B4513;"></i>
-                                <h6 class="fw-bold mt-3">Código QR</h6>
-                                <p class="text-muted small mb-0">Para etiquetar el producto físico</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <i class="fas fa-star" style="font-size: 3rem; color: #FFD700;"></i>
-                                <h6 class="fw-bold mt-3">Calificación</h6>
-                                <p class="text-muted small mb-0">Predicción de calidad del lote</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <i class="fas fa-calendar-times" style="font-size: 3rem; color: #dc3545;"></i>
-                                <h6 class="fw-bold mt-3">Vencimiento</h6>
-                                <p class="text-muted small mb-0">120 días desde elaboración</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="text-center">
-                                <i class="fas fa-apple-alt" style="font-size: 3rem; color: #28a745;"></i>
-                                <h6 class="fw-bold mt-3">Tabla Nutricional</h6>
-                                <p class="text-muted small mb-0">Valores por 100ml</p>
-                            </div>
-                        </div>
+        <div class="form-container">
+            <div class="info-card">
+                <h4 class="info-title">
+                    <i class="fas fa-info-circle"></i>
+                    ¿Qué se genera?
+                </h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-qrcode" style="color: #8B4513;"></i>
+                        <h6>Código QR</h6>
+                        <p>Para etiquetar el producto físico</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-star" style="color: #FFD700;"></i>
+                        <h6>Calificación</h6>
+                        <p>Predicción de calidad del lote</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-calendar-times" style="color: #dc3545;"></i>
+                        <h6>Vencimiento</h6>
+                        <p>120 días desde elaboración</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-apple-alt" style="color: #28a745;"></i>
+                        <h6>Tabla Nutricional</h6>
+                        <p>Valores por 100ml</p>
                     </div>
                 </div>
             </div>
