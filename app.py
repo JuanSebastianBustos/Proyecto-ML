@@ -10,6 +10,34 @@ import io
 import base64
 import socket
 
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    from psycopg2 import Error
+    POSTGRES_AVAILABLE = True
+    print("✅ psycopg2 disponible")
+except ImportError:
+    POSTGRES_AVAILABLE = False
+    print("⚠️ psycopg2 no disponible - Modo desarrollo")
+
+def get_db_connection():
+    if not POSTGRES_AVAILABLE:
+        print("🔄 Modo desarrollo - Sin base de datos")
+        return None
+    
+    try:
+        database_url = os.environ.get('DATABASE_URL')
+        if database_url:
+            connection = psycopg2.connect(database_url, cursor_factory=RealDictCursor)
+            print("✅ Conectado a PostgreSQL")
+            return connection
+        else:
+            print("❌ DATABASE_URL no configurado")
+            return None
+    except Exception as e:
+        print(f"❌ Error conectando a PostgreSQL: {e}")
+        return None
+
 # Función para obtener IP local automáticamente
 def obtener_ip_local():
     """Obtiene la IP local de la máquina"""
